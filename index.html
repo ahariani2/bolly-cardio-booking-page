@@ -127,8 +127,28 @@
   </div>
 </div>
 
+<style>
+  /* NEW: Dedicated Sold Out / Disabled Styling */
+  .book-btn.sold-out { 
+    background: #444 !important; /* Darker, clearly inactive */
+    color: #888 !important;
+    cursor: not-allowed; 
+    pointer-events: none;
+    opacity: 0.8;
+  }
+  
+  /* Centering the sync offline message */
+  .fallback-msg {
+    font-size: 0.7rem;
+    color: #999;
+    margin-top: 8px;
+    font-style: italic;
+  }
+</style>
+
 <script>
   let currentQty = 1;
+  let cachedData = null; // Store data so we don't fetch on every qty change
   const WORKER_URL = 'https://bolly-cardio-api.ahariani2.workers.dev/';
   
   const ACUITY_BASE = "https://bollycardiowitharushi.as.me/schedule/de43052c/appointment/80746158/calendar/12423814/datetime/";
@@ -149,48 +169,49 @@
   }
 
   function renderClasses(data) {
+    cachedData = data; 
     const container = document.getElementById('class-list');
     container.innerHTML = ''; 
 
-    const validDates = Object.keys(data).filter(key => dateMap[key]);
-
-    validDates.forEach(key => {
+    // We use dateMap as the primary source so cards show even if sync fails
+    Object.keys(dateMap).forEach(key => {
       const classInfo = data[key];
-      const spots = parseInt(classInfo.spots) || 0;
-      const theme = classInfo.theme || "";
-      const dateDisplay = dateMap[key].display;
-      const targetUrl = `${ACUITY_BASE}${dateMap[key].iso}${TIME_SUFFIX}`;
-
-      // NEW LOGIC: Check if we have enough spots for the selected quantity
+      const hasLiveData = !!classInfo;
+      const spots = hasLiveData ? parseInt(classInfo.spots) : 99; 
+      const theme = (classInfo && classInfo.theme) ? classInfo.theme : "";
+      
       const isSoldOut = spots <= 0;
       const isNotEnoughSpots = currentQty > spots;
+      const targetUrl = `${ACUITY_BASE}${dateMap[key].iso}${TIME_SUFFIX}`;
 
       const card = document.createElement('div');
       card.className = 'class-card';
       card.innerHTML = `
         <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-          <span class="date-text">${dateDisplay}</span>
+          <span class="date-text">${dateMap[key].display}</span>
           <span style="font-size: 0.75rem; font-weight: 700; color: var(--muted-magenta); opacity: 0.8;">${getWeeksAway(key)}</span>
         </div>
         <div class="card-content">
           <div class="details-col">
             ${theme ? `<span class="theme-title">${theme}</span>` : ''}
             <span class="info-line">10:45am (60 mins)</span>
-            <span class="info-line price-display" data-base="12">$${(12 * currentQty).toFixed(2)}</span>
+            <span class="info-line price-display">$${(12 * currentQty).toFixed(2)}</span>
             <span class="location-line">📍 Creatives Rental Space</span>
           </div>
           <div class="action-col">
             <a href="${targetUrl}?quantity=${currentQty}" 
-               target="_blank" 
-               rel="noopener"
-               class="book-btn ${isSoldOut ? 'sold-out' : (isNotEnoughSpots ? 'sold-out' : '')}" 
-               style="${isNotEnoughSpots && !isSoldOut ? 'background: #666; cursor: not-allowed; pointer-events: none;' : ''}"
+               target="_blank" rel="noopener"
+               class="book-btn ${isSoldOut || isNotEnoughSpots ? 'sold-out' : ''}" 
                id="btn-${key}">
                ${isSoldOut ? 'SOLD OUT' : (isNotEnoughSpots ? 'LIMIT REACHED' : 'BOOK')}
             </a>
-            <span class="spots-label" style="color: ${spots <= 10 ? 'var(--bright-pink)' : 'var(--muted-magenta)'}">
-              ${isSoldOut ? 'Sold Out!' : (spots <= 10 ? `Only ${spots} spots left!` : `${spots} spots left`)}
-            </span>
+            <div class="label-container">
+              ${hasLiveData ? `
+                <span class="spots-label" style="color: ${spots <= 10 ? 'var(--bright-pink)' : 'var(--muted-magenta)'}">
+                  ${isSoldOut ? 'No spots remaining' : (spots <= 10 ? `Only ${spots} left!` : `${spots} spots left`)}
+                </span>
+              ` : '<span class="fallback-msg">Checking availability...</span>'}
+            </div>
           </div>
         </div>
       `;
@@ -203,12 +224,20 @@
     if (newVal >= 1 && newVal <= 15) {
       currentQty = newVal;
       document.getElementById('qty-val').innerText = currentQty;
-      fetch(WORKER_URL).then(r => r.json()).then(renderClasses);
+      // Re-render from cache instead of hitting the network again
+      if (cachedData) renderClasses(cachedData);
     }
   }
 
-  fetch(WORKER_URL).then(r => r.json()).then(renderClasses).catch(err => {
-      console.error('Bolly Sync Error:', err);
-      document.getElementById('class-list').innerHTML = '<p>Limited spots available. Please refresh.</p>';
-  });
+  function fetchAndRender() {
+    fetch(WORKER_URL)
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(renderClasses)
+      .catch(() => {
+        console.warn("Using offline fallback");
+        renderClasses({}); // Still shows cards!
+      });
+  }
+
+  fetchAndRender();
 </script>
