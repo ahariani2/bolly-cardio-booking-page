@@ -24,7 +24,6 @@
 
   .hub-header h2 { font-size: 1.8rem; margin-bottom: 8px; font-weight: 700; color: #333; }
   
-  /* Stepper UI - Matching Mock */
   .qty-label { font-size: 0.9rem; font-weight: 700; margin-right: 10px; color: #333; }
   .stepper-container { display: flex; align-items: center; justify-content: center; margin-bottom: 30px; }
   .stepper {
@@ -42,7 +41,6 @@
     font-size: 1rem; cursor: pointer; display: flex; align-items: center;
   }
 
-  /* Class Cards - The "Acuity" Style Mockup */
   .class-card {
     background: var(--white);
     border-radius: 12px;
@@ -76,7 +74,7 @@
 
   .theme-title { color: var(--bright-pink); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; display: block; margin-bottom: 8px; }
   .info-line { font-size: 0.9rem; color: #444; margin-bottom: 4px; display: block; }
-  .location-line { font-size: 0.85rem; color: #666; margin-top: 8px; display: block; }
+  .location-line { font-size: 0.85rem; color: #666; margin-top: 8px; display: block; margin-bottom: 8px; }
 
   .book-btn {
     background: var(--muted-magenta);
@@ -109,25 +107,27 @@
   </div>
 
   <div id="class-list" class="class-list">
-  <p style="color:var(--dark-magenta); font-weight:600; padding:20px;">Loading latest classes...</p>
-</div>
+    <p style="color:var(--dark-magenta); font-weight:600; padding:20px;">Loading latest classes...</p>
+  </div>
 </div>
 
 <script>
   let currentQty = 1;
   const WORKER_URL = 'https://bolly-cardio-api.ahariani2.workers.dev/';
-  const ACUITY_BASE_URL = "https://bollycardio.as.me/"; 
+  
+  // Template constants
+  const ACUITY_BASE = "https://bollycardiowitharushi.as.me/schedule/de43052c/appointment/80746158/calendar/12423814/datetime/";
+  const TIME_SUFFIX = "T10%3A45%3A00-04%3A00";
 
+  // dateMap only needs the display name and ISO date string now
   const dateMap = {
-    'mar15': 'Sunday, March 15, 2026',
-    'mar29': 'Sunday, March 29, 2026',
-    'apr12': 'Sunday, April 12, 2026'
+    'mar15': { display: 'Sunday, March 15, 2026', iso: '2026-03-15' },
+    'mar29': { display: 'Sunday, March 29, 2026', iso: '2026-03-29' },
+    'apr12': { display: 'Sunday, April 12, 2026', iso: '2026-04-12' }
   };
 
-  // NEW: Helper function to calculate weeks
   function getWeeksAway(dateKey) {
-    const dates = { 'mar15': '2026-03-15', 'mar29': '2026-03-29', 'apr12': '2026-04-12' };
-    const classDate = new Date(dates[dateKey]);
+    const classDate = new Date(dateMap[dateKey].iso);
     const today = new Date();
     const diff = classDate - today;
     const weeks = Math.ceil(diff / (1000 * 60 * 60 * 24 * 7));
@@ -144,7 +144,10 @@
       const classInfo = data[key];
       const spots = parseInt(classInfo.spots) || 0;
       const theme = classInfo.theme || "";
-      const dateDisplay = dateMap[key];
+      const dateDisplay = dateMap[key].display;
+      
+      // Auto-construct the URL using the template
+      const targetUrl = `${ACUITY_BASE}${dateMap[key].iso}${TIME_SUFFIX}`;
 
       const card = document.createElement('div');
       card.className = 'class-card';
@@ -161,7 +164,9 @@
             <span class="location-line">📍 Creatives Rental Space</span>
           </div>
           <div class="action-col">
-            <a href="${ACUITY_BASE_URL}?qty=${currentQty}" 
+            <a href="${targetUrl}?quantity=${currentQty}" 
+               target="_blank" 
+               rel="noopener"
                class="book-btn ${spots <= 0 ? 'sold-out' : ''}" 
                id="btn-${key}">
                ${spots <= 0 ? 'SOLD OUT' : 'BOOK'}
