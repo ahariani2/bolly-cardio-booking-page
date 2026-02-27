@@ -22,6 +22,13 @@
     border-radius: 20px;
   }
 
+  /* STEP 3 FIX: Reduce padding on mobile */
+  @media (max-width: 480px) {
+    .bolly-hub { padding: 15px 8px; }
+    .card-content { padding: 15px 10px; }
+    .card-header { padding: 10px 15px; }
+  }
+
   .hub-header h2 { font-size: 1.8rem; margin-bottom: 8px; font-weight: 700; color: #333; }
   
   .qty-label { font-size: 0.9rem; font-weight: 700; margin-right: 10px; color: #333; }
@@ -66,11 +73,19 @@
     padding: 20px;
     text-align: left;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center; /* Vertically aligns left and right columns */
   }
 
   .details-col { flex: 1; }
-  .action-col { text-align: right; display: flex; flex-direction: column; align-items: flex-end; }
+
+  /* STEP 3 FIX: Center items horizontally inside the column */
+  .action-col { 
+    text-align: center; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    min-width: 120px; /* Ensures space for the button/label */
+  }
 
   .theme-title { color: var(--bright-pink); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; display: block; margin-bottom: 8px; }
   .info-line { font-size: 0.9rem; color: #444; margin-bottom: 4px; display: block; }
@@ -86,6 +101,7 @@
     font-size: 1rem;
     text-transform: uppercase;
     transition: background 0.2s;
+    white-space: nowrap; /* Keeps BOOK on one line */
   }
   .book-btn:hover { background: var(--bright-pink); }
   .book-btn.sold-out { background: #ccc; cursor: not-allowed; pointer-events: none; }
@@ -115,11 +131,9 @@
   let currentQty = 1;
   const WORKER_URL = 'https://bolly-cardio-api.ahariani2.workers.dev/';
   
-  // Template constants
   const ACUITY_BASE = "https://bollycardiowitharushi.as.me/schedule/de43052c/appointment/80746158/calendar/12423814/datetime/";
   const TIME_SUFFIX = "T10%3A45%3A00-04%3A00";
 
-  // dateMap only needs the display name and ISO date string now
   const dateMap = {
     'mar15': { display: 'Sunday, March 15, 2026', iso: '2026-03-15' },
     'mar29': { display: 'Sunday, March 29, 2026', iso: '2026-03-29' },
@@ -145,8 +159,6 @@
       const spots = parseInt(classInfo.spots) || 0;
       const theme = classInfo.theme || "";
       const dateDisplay = dateMap[key].display;
-      
-      // Auto-construct the URL using the template
       const targetUrl = `${ACUITY_BASE}${dateMap[key].iso}${TIME_SUFFIX}`;
 
       const card = document.createElement('div');
@@ -172,7 +184,7 @@
                ${spots <= 0 ? 'SOLD OUT' : 'BOOK'}
             </a>
             <span class="spots-label" style="color: ${spots <= 10 ? 'var(--bright-pink)' : 'var(--muted-magenta)'}">
-              ${spots <= 0 ? 'Sold Out!' : (spots <= 10 ? `🔥 Only ${spots} spots left!` : `${spots} spots left`)}
+              ${spots <= 0 ? 'Sold Out!' : (spots <= 10 ? `Only ${spots} left!` : `${spots} spots left`)}
             </span>
           </div>
         </div>
