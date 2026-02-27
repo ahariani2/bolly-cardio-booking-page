@@ -161,6 +161,10 @@
       const dateDisplay = dateMap[key].display;
       const targetUrl = `${ACUITY_BASE}${dateMap[key].iso}${TIME_SUFFIX}`;
 
+      // NEW LOGIC: Check if we have enough spots for the selected quantity
+      const isSoldOut = spots <= 0;
+      const isNotEnoughSpots = currentQty > spots;
+
       const card = document.createElement('div');
       card.className = 'class-card';
       card.innerHTML = `
@@ -179,12 +183,13 @@
             <a href="${targetUrl}?quantity=${currentQty}" 
                target="_blank" 
                rel="noopener"
-               class="book-btn ${spots <= 0 ? 'sold-out' : ''}" 
+               class="book-btn ${isSoldOut ? 'sold-out' : (isNotEnoughSpots ? 'sold-out' : '')}" 
+               style="${isNotEnoughSpots && !isSoldOut ? 'background: #666; cursor: not-allowed; pointer-events: none;' : ''}"
                id="btn-${key}">
-               ${spots <= 0 ? 'SOLD OUT' : 'BOOK'}
+               ${isSoldOut ? 'SOLD OUT' : (isNotEnoughSpots ? 'LIMIT REACHED' : 'BOOK')}
             </a>
             <span class="spots-label" style="color: ${spots <= 10 ? 'var(--bright-pink)' : 'var(--muted-magenta)'}">
-              ${spots <= 0 ? 'Sold Out!' : (spots <= 10 ? `Only ${spots} left!` : `${spots} spots left`)}
+              ${isSoldOut ? 'Sold Out!' : (spots <= 10 ? `Only ${spots} spots left!` : `${spots} spots left`)}
             </span>
           </div>
         </div>
@@ -195,7 +200,7 @@
 
   function changeQty(delta) {
     const newVal = currentQty + delta;
-    if (newVal >= 1 && newVal <= 10) {
+    if (newVal >= 1 && newVal <= 15) {
       currentQty = newVal;
       document.getElementById('qty-val').innerText = currentQty;
       fetch(WORKER_URL).then(r => r.json()).then(renderClasses);
