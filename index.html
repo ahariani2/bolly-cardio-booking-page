@@ -1,0 +1,192 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg-pink: #fff6fb;
+    --dark-magenta: #8b004b;
+    --header-pink: #ffdef0;
+    --bright-pink: #e4007c;
+    --muted-magenta: #9f2c6b;
+    --white: #ffffff;
+  }
+
+  .bolly-hub {
+    font-family: 'Quicksand', sans-serif;
+    max-width: 550px;
+    margin: 0 auto;
+    text-align: center;
+    background-color: var(--bg-pink);
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .hub-header h2 { font-size: 1.8rem; margin-bottom: 8px; font-weight: 700; color: #333; }
+  
+  /* Stepper UI - Matching Mock */
+  .qty-label { font-size: 0.9rem; font-weight: 700; margin-right: 10px; color: #333; }
+  .stepper-container { display: flex; align-items: center; justify-content: center; margin-bottom: 30px; }
+  .stepper {
+    display: flex;
+    align-items: center;
+    background: var(--bright-pink);
+    padding: 4px 6px;
+    border-radius: 50px;
+    color: white;
+    font-weight: 700;
+    gap: 6px;
+  }
+  .step-btn {
+    background: none; border: none; color: white;
+    font-size: 1rem; cursor: pointer; display: flex; align-items: center;
+  }
+
+  /* Class Cards - The "Acuity" Style Mockup */
+  .class-card {
+    background: var(--white);
+    border-radius: 12px;
+    margin-bottom: 25px;
+    overflow: hidden;
+    border: 1px solid var(--header-pink);
+    box-shadow: 0 4px 12px rgba(139, 0, 75, 0.05);
+  }
+
+  .card-header {
+    background-color: var(--header-pink);
+    padding: 12px 20px;
+    text-align: left;
+  }
+  .card-header .date-text {
+    color: var(--dark-magenta);
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+
+  .card-content {
+    display: flex;
+    padding: 20px;
+    text-align: left;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .details-col { flex: 1; }
+  .action-col { text-align: right; display: flex; flex-direction: column; align-items: flex-end; }
+
+  .theme-title { color: var(--bright-pink); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; display: block; margin-bottom: 8px; }
+  .info-line { font-size: 0.9rem; color: #444; margin-bottom: 4px; display: block; }
+  .location-line { font-size: 0.85rem; color: #666; margin-top: 8px; display: block; }
+
+  .book-btn {
+    background: var(--muted-magenta);
+    color: white !important;
+    text-decoration: none;
+    padding: 10px 24px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    transition: background 0.2s;
+  }
+  .book-btn:hover { background: var(--bright-pink); }
+  .book-btn.sold-out { background: #ccc; cursor: not-allowed; pointer-events: none; }
+
+  .spots-label { font-size: 0.75rem; font-weight: 600; margin-top: 8px; color: var(--bright-pink); }
+</style>
+
+<div class="bolly-hub">
+  <div class="hub-header">
+    <h2>Bolly Cardio with Arushi</h2>
+    <div class="stepper-container">
+      <span class="qty-label">Quantity</span>
+      <div class="stepper">
+        <button class="step-btn" onclick="changeQty(-1)">−</button>
+        <span id="qty-val">1</span>
+        <button class="step-btn" onclick="changeQty(1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="class-list" class="class-list">
+  <p style="color:var(--dark-magenta); font-weight:600; padding:20px;">Loading latest classes...</p>
+</div>
+</div>
+
+<script>
+  let currentQty = 1;
+  const WORKER_URL = 'https://bolly-cardio-api.ahariani2.workers.dev/';
+  const ACUITY_BASE_URL = "https://bollycardio.as.me/"; 
+
+  const dateMap = {
+    'mar15': 'Sunday, March 15, 2026',
+    'mar29': 'Sunday, March 29, 2026',
+    'apr12': 'Sunday, April 12, 2026'
+  };
+
+  // NEW: Helper function to calculate weeks
+  function getWeeksAway(dateKey) {
+    const dates = { 'mar15': '2026-03-15', 'mar29': '2026-03-29', 'apr12': '2026-04-12' };
+    const classDate = new Date(dates[dateKey]);
+    const today = new Date();
+    const diff = classDate - today;
+    const weeks = Math.ceil(diff / (1000 * 60 * 60 * 24 * 7));
+    return weeks > 0 ? `In ${weeks} weeks` : "Soon!";
+  }
+
+  function renderClasses(data) {
+    const container = document.getElementById('class-list');
+    container.innerHTML = ''; 
+
+    const validDates = Object.keys(data).filter(key => dateMap[key]);
+
+    validDates.forEach(key => {
+      const classInfo = data[key];
+      const spots = parseInt(classInfo.spots) || 0;
+      const theme = classInfo.theme || "";
+      const dateDisplay = dateMap[key];
+
+      const card = document.createElement('div');
+      card.className = 'class-card';
+      card.innerHTML = `
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+          <span class="date-text">${dateDisplay}</span>
+          <span style="font-size: 0.75rem; font-weight: 700; color: var(--muted-magenta); opacity: 0.8;">${getWeeksAway(key)}</span>
+        </div>
+        <div class="card-content">
+          <div class="details-col">
+            ${theme ? `<span class="theme-title">${theme}</span>` : ''}
+            <span class="info-line">10:45am (60 mins)</span>
+            <span class="info-line price-display" data-base="12">$${(12 * currentQty).toFixed(2)}</span>
+            <span class="location-line">📍 Creatives Rental Space</span>
+          </div>
+          <div class="action-col">
+            <a href="${ACUITY_BASE_URL}?qty=${currentQty}" 
+               class="book-btn ${spots <= 0 ? 'sold-out' : ''}" 
+               id="btn-${key}">
+               ${spots <= 0 ? 'SOLD OUT' : 'BOOK'}
+            </a>
+            <span class="spots-label" style="color: ${spots <= 10 ? 'var(--bright-pink)' : 'var(--muted-magenta)'}">
+              ${spots <= 0 ? 'Sold Out!' : (spots <= 10 ? `🔥 Only ${spots} spots left!` : `${spots} spots left`)}
+            </span>
+          </div>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function changeQty(delta) {
+    const newVal = currentQty + delta;
+    if (newVal >= 1 && newVal <= 10) {
+      currentQty = newVal;
+      document.getElementById('qty-val').innerText = currentQty;
+      fetch(WORKER_URL).then(r => r.json()).then(renderClasses);
+    }
+  }
+
+  fetch(WORKER_URL).then(r => r.json()).then(renderClasses).catch(err => {
+      console.error('Bolly Sync Error:', err);
+      document.getElementById('class-list').innerHTML = '<p>Limited spots available. Please refresh.</p>';
+  });
+</script>
