@@ -1,8 +1,24 @@
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LX2FYGD8QG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LX2FYGD8QG');
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
 
 <style>
+  /* 1. Global Reset & Scroll Fix */
+  body, html { 
+    margin: 0; 
+    padding: 0; 
+    overflow: hidden; 
+    background: transparent; 
+  }
+  
   :root {
     --bg-pink: #fff6fb;
     --dark-magenta: #8b004b;
@@ -22,7 +38,6 @@
     border-radius: 20px;
   }
 
-  /* STEP 3 FIX: Reduce padding on mobile */
   @media (max-width: 480px) {
     .bolly-hub { padding: 15px 8px; }
     .card-content { padding: 15px 10px; }
@@ -30,83 +45,49 @@
   }
 
   .hub-header h2 { font-size: 1.8rem; margin-bottom: 8px; font-weight: 700; color: #333; }
-  
   .qty-label { font-size: 0.9rem; font-weight: 700; margin-right: 10px; color: #333; }
   .stepper-container { display: flex; align-items: center; justify-content: center; margin-bottom: 30px; }
   .stepper {
-    display: flex;
-    align-items: center;
-    background: var(--bright-pink);
-    padding: 4px 6px;
-    border-radius: 50px;
-    color: white;
-    font-weight: 700;
-    gap: 6px;
+    display: flex; align-items: center; background: var(--bright-pink);
+    padding: 4px 6px; border-radius: 50px; color: white; gap: 6px;
   }
-  .step-btn {
-    background: none; border: none; color: white;
-    font-size: 1rem; cursor: pointer; display: flex; align-items: center;
-  }
+  .step-btn { background: none; border: none; color: white; font-size: 1rem; cursor: pointer; }
 
   .class-card {
-    background: var(--white);
-    border-radius: 12px;
-    margin-bottom: 25px;
-    overflow: hidden;
-    border: 1px solid var(--header-pink);
+    background: var(--white); border-radius: 12px; margin-bottom: 25px;
+    overflow: hidden; border: 1px solid var(--header-pink);
     box-shadow: 0 4px 12px rgba(139, 0, 75, 0.05);
   }
 
-  .card-header {
-    background-color: var(--header-pink);
-    padding: 12px 20px;
-    text-align: left;
-  }
-  .card-header .date-text {
-    color: var(--dark-magenta);
-    font-weight: 700;
-    font-size: 1.1rem;
-  }
+  .card-header { background-color: var(--header-pink); padding: 12px 20px; text-align: left; }
+  .card-header .date-text { color: var(--dark-magenta); font-weight: 700; font-size: 1.1rem; }
 
   .card-content {
-    display: flex;
-    padding: 20px;
-    text-align: left;
-    justify-content: space-between;
-    align-items: center; /* Vertically aligns left and right columns */
+    display: flex; padding: 20px; text-align: left;
+    justify-content: space-between; align-items: center;
   }
 
   .details-col { flex: 1; }
-
-  /* STEP 3 FIX: Center items horizontally inside the column */
   .action-col { 
-    text-align: center; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    min-width: 120px; /* Ensures space for the button/label */
+    text-align: center; display: flex; flex-direction: column; 
+    align-items: center; min-width: 130px; 
   }
 
   .theme-title { color: var(--bright-pink); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; display: block; margin-bottom: 8px; }
   .info-line { font-size: 0.9rem; color: #444; margin-bottom: 4px; display: block; }
-  .location-line { font-size: 0.85rem; color: #666; margin-top: 8px; display: block; margin-bottom: 8px; }
+  .location-line { font-size: 0.85rem; color: #666; margin-top: 8px; display: block; }
 
   .book-btn {
-    background: var(--muted-magenta);
-    color: white !important;
-    text-decoration: none;
-    padding: 10px 24px;
-    border-radius: 4px;
-    font-weight: 700;
-    font-size: 1rem;
-    text-transform: uppercase;
-    transition: background 0.2s;
-    white-space: nowrap; /* Keeps BOOK on one line */
+    background: var(--muted-magenta); color: white !important;
+    text-decoration: none; padding: 10px 18px; border-radius: 4px;
+    font-weight: 700; text-transform: uppercase; transition: 0.2s;  white-space: nowrap; /* Keeps BOOK on one line */
   }
   .book-btn:hover { background: var(--bright-pink); }
-  .book-btn.sold-out { background: #ccc; cursor: not-allowed; pointer-events: none; }
+  .book-btn.sold-out { background: #444 !important; color: #888 !important; pointer-events: none; opacity: 0.7; }
 
-  .spots-label { font-size: 0.75rem; font-weight: 600; margin-top: 8px; color: var(--bright-pink); }
+  .spots-label { font-size: 0.75rem; font-weight: 600; margin-top: 8px; color: var(--bright-pink); display: block; }
+  .label-container { min-height: 25px; margin-top: 5px; }
+  .fallback-msg { font-size: 0.7rem; color: #999; font-style: italic; }
 </style>
 
 <div class="bolly-hub">
@@ -121,36 +102,15 @@
       </div>
     </div>
   </div>
-
-  <div id="class-list" class="class-list">
+  <div id="class-list">
     <p style="color:var(--dark-magenta); font-weight:600; padding:20px;">Loading latest classes...</p>
   </div>
 </div>
 
-<style>
-  /* NEW: Dedicated Sold Out / Disabled Styling */
-  .book-btn.sold-out { 
-    background: #444 !important; /* Darker, clearly inactive */
-    color: #888 !important;
-    cursor: not-allowed; 
-    pointer-events: none;
-    opacity: 0.8;
-  }
-  
-  /* Centering the sync offline message */
-  .fallback-msg {
-    font-size: 0.7rem;
-    color: #999;
-    margin-top: 8px;
-    font-style: italic;
-  }
-</style>
-
 <script>
   let currentQty = 1;
-  let cachedData = null; // Store data so we don't fetch on every qty change
+  let cachedData = null;
   const WORKER_URL = 'https://bolly-cardio-api.ahariani2.workers.dev/';
-  
   const ACUITY_BASE = "https://bollycardiowitharushi.as.me/schedule/de43052c/appointment/80746158/calendar/12423814/datetime/";
   const TIME_SUFFIX = "T10%3A45%3A00-04%3A00";
 
@@ -161,49 +121,45 @@
   };
 
   function getWeeksAway(dateKey) {
-    const classDate = new Date(dateMap[dateKey].iso);
-    const today = new Date();
-    const diff = classDate - today;
+    const diff = new Date(dateMap[dateKey].iso) - new Date();
     const weeks = Math.ceil(diff / (1000 * 60 * 60 * 24 * 7));
     return weeks > 0 ? `In ${weeks} weeks` : "Soon!";
   }
 
   function renderClasses(data) {
-    cachedData = data; 
+    cachedData = data;
     const container = document.getElementById('class-list');
-    container.innerHTML = ''; 
+    container.innerHTML = '';
 
-    // We use dateMap as the primary source so cards show even if sync fails
     Object.keys(dateMap).forEach(key => {
       const classInfo = data[key];
       const hasLiveData = !!classInfo;
-      const spots = hasLiveData ? parseInt(classInfo.spots) : 99; 
+      const spots = hasLiveData ? parseInt(classInfo.spots) : 99;
       const theme = (classInfo && classInfo.theme) ? classInfo.theme : "";
-      
       const isSoldOut = spots <= 0;
-      const isNotEnoughSpots = currentQty > spots;
+      const isLimit = currentQty > spots;
       const targetUrl = `${ACUITY_BASE}${dateMap[key].iso}${TIME_SUFFIX}`;
 
       const card = document.createElement('div');
       card.className = 'class-card';
       card.innerHTML = `
-        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
           <span class="date-text">${dateMap[key].display}</span>
-          <span style="font-size: 0.75rem; font-weight: 700; color: var(--muted-magenta); opacity: 0.8;">${getWeeksAway(key)}</span>
+          <span style="font-size:0.75rem; font-weight:700; color:var(--muted-magenta); opacity:0.8;">${getWeeksAway(key)}</span>
         </div>
         <div class="card-content">
           <div class="details-col">
             ${theme ? `<span class="theme-title">${theme}</span>` : ''}
-            <span class="info-line">10:45am (60 mins)</span>
+            <span class="info-line"><b>10:45am</b> (60 mins)</span>
             <span class="info-line price-display">$${(12 * currentQty).toFixed(2)}</span>
             <span class="location-line">📍 Creatives Rental Space</span>
           </div>
           <div class="action-col">
             <a href="${targetUrl}?quantity=${currentQty}" 
                target="_blank" rel="noopener"
-               class="book-btn ${isSoldOut || isNotEnoughSpots ? 'sold-out' : ''}" 
-               id="btn-${key}">
-               ${isSoldOut ? 'SOLD OUT' : (isNotEnoughSpots ? 'LIMIT REACHED' : 'BOOK')}
+               onclick="gtag('event', 'click_book', {'event_label': '${key}'})"
+               class="book-btn ${isSoldOut || isLimit ? 'sold-out' : ''}">
+               ${isSoldOut ? 'SOLD OUT' : (isLimit ? 'LIMIT REACHED' : 'BOOK')}
             </a>
             <div class="label-container">
               ${hasLiveData ? `
@@ -217,6 +173,10 @@
       `;
       container.appendChild(card);
     });
+
+    // Notify Carrd to resize
+    const height = document.body.scrollHeight;
+    window.parent.postMessage({ type: 'resize', height: height }, '*');
   }
 
   function changeQty(delta) {
@@ -224,19 +184,15 @@
     if (newVal >= 1 && newVal <= 15) {
       currentQty = newVal;
       document.getElementById('qty-val').innerText = currentQty;
-      // Re-render from cache instead of hitting the network again
       if (cachedData) renderClasses(cachedData);
     }
   }
 
   function fetchAndRender() {
-    fetch(WORKER_URL)
+    fetch(`${WORKER_URL}?t=${Date.now()}`, { cache: 'no-store' })
       .then(r => r.ok ? r.json() : Promise.reject())
       .then(renderClasses)
-      .catch(() => {
-        console.warn("Using offline fallback");
-        renderClasses({}); // Still shows cards!
-      });
+      .catch(() => renderClasses({}));
   }
 
   fetchAndRender();
