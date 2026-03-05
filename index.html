@@ -17,7 +17,7 @@
     padding: 0; 
     overflow: hidden; 
     background: transparent; 
-    min-height: 900px; /* This is the magic number for 3 cards */
+    min-height: 900px; 
   }
   
   :root {
@@ -35,7 +35,7 @@
     margin: 0 auto;
     text-align: center;
     background-color: var(--bg-pink);
-    padding: 20px 20px 100px 20px; /* MASSIVE bottom padding (120px) */
+    padding: 20px 20px 100px 20px; 
     border-radius: 20px;
   }
 
@@ -81,10 +81,11 @@
   .book-btn {
     background: var(--muted-magenta); color: white !important;
     text-decoration: none; padding: 10px 18px; border-radius: 4px;
-    font-weight: 700; text-transform: uppercase; transition: 0.2s;  white-space: nowrap; /* Keeps BOOK on one line */
+    font-weight: 700; font-size: 1rem; text-transform: uppercase; 
+    transition: 0.2s; white-space: nowrap; 
   }
   .book-btn:hover { background: var(--bright-pink); }
-  .book-btn.sold-out { background: #444 !important; color: #888 !important; pointer-events: none; opacity: 0.7; }
+  .book-btn.sold-out { background: #444 !important; color: #888 !important; pointer-events: none; opacity: 0.8; }
 
   .spots-label { font-size: 0.75rem; font-weight: 600; margin-top: 8px; color: var(--bright-pink); display: block; }
   .label-container { min-height: 25px; margin-top: 5px; }
@@ -116,7 +117,7 @@
   const TIME_SUFFIX = "T10%3A45%3A00-04%3A00";
 
   const dateMap = {
-    'mar15': { display: 'Sunday, March 15, 2026', iso: '2026-03-15' },
+    'mar15': { display: 'Sunday, March 15, 2026', iso: '2026-03-15', hardSoldOut: true },
     'mar29': { display: 'Sunday, March 29, 2026', iso: '2026-03-29' },
     'apr12': { display: 'Sunday, April 12, 2026', iso: '2026-04-12' }
   };
@@ -135,7 +136,10 @@
     Object.keys(dateMap).forEach(key => {
       const classInfo = data[key];
       const hasLiveData = !!classInfo;
-      const spots = hasLiveData ? parseInt(classInfo.spots) : 99;
+      
+      let spots = dateMap[key].hardSoldOut ? 0 : 99;
+      if (hasLiveData) spots = parseInt(classInfo.spots);
+
       const theme = (classInfo && classInfo.theme) ? classInfo.theme : "";
       const isSoldOut = spots <= 0;
       const isLimit = currentQty > spots;
@@ -163,7 +167,7 @@
                ${isSoldOut ? 'SOLD OUT' : (isLimit ? 'LIMIT REACHED' : 'BOOK')}
             </a>
             <div class="label-container">
-              ${hasLiveData ? `
+              ${hasLiveData || dateMap[key].hardSoldOut ? `
                 <span class="spots-label" style="color: ${spots <= 10 ? 'var(--bright-pink)' : 'var(--muted-magenta)'}">
                   ${isSoldOut ? 'No spots remaining' : (spots <= 10 ? `Only ${spots} left!` : `${spots} spots left`)}
                 </span>
@@ -175,7 +179,7 @@
       container.appendChild(card);
     });
 
-    // Notify Carrd to resize
+    // CRITICAL: Notify Carrd to resize the IFrame height
     const height = document.body.scrollHeight;
     window.parent.postMessage({ type: 'resize', height: height }, '*');
   }
