@@ -117,14 +117,22 @@
   const TIME_SUFFIX = "T10%3A45%3A00-04%3A00";
 
   const dateMap = {
-    'mar15': { display: 'Sunday, March 15, 2026', iso: '2026-03-15' },
+    'mar15': { display: 'Sunday, March 15, 2026', iso: '2026-03-15', hardSoldOut: true },
     'mar29': { display: 'Sunday, March 29, 2026', iso: '2026-03-29' },
     'apr12': { display: 'Sunday, April 12, 2026', iso: '2026-04-12' }
   };
 
   function getWeeksAway(dateKey) {
-    const diff = new Date(dateMap[dateKey].iso) - new Date();
-    const weeks = Math.ceil(diff / (1000 * 60 * 60 * 24 * 7));
+    const classDate = new Date(dateMap[dateKey].iso + 'T00:00:00');
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    
+    const diffDays = Math.ceil((classDate - today) / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) return "Today!";
+    if (diffDays > 0 && diffDays < 7) return `In ${diffDays} day${diffDays > 1 ? 's' : ''}`;
+    
+    const weeks = Math.ceil(diffDays / 7);
     return weeks > 0 ? `In ${weeks} weeks` : "Soon!";
   }
 
@@ -167,11 +175,14 @@
                ${isSoldOut ? 'SOLD OUT' : (isLimit ? 'LIMIT REACHED' : 'BOOK')}
             </a>
             <div class="label-container">
-              ${hasLiveData || dateMap[key].hardSoldOut ? `
-                <span class="spots-label" style="color: ${spots <= 10 ? 'var(--bright-pink)' : 'var(--muted-magenta)'}">
-                  ${isSoldOut ? 'No spots remaining' : (spots <= 10 ? `Only ${spots} left!` : `${spots} spots left`)}
-                </span>
-              ` : '<span class="fallback-msg">Checking availability...</span>'}
+              ${(hasLiveData || dateMap[key].hardSoldOut) ? (
+                // Only show spots if it's 15 or less
+                spots <= 15 ? `
+                  <span class="spots-label" style="color: ${spots <= 10 ? 'var(--bright-pink)' : 'var(--muted-magenta)'}">
+                    ${isSoldOut ? 'No spots remaining' : (spots <= 10 ? `Only ${spots} left!` : `${spots} spots left`)}
+                  </span>
+                ` : ''
+              ) : '<span class="fallback-msg">Checking availability...</span>'}
             </div>
           </div>
         </div>
@@ -179,7 +190,6 @@
       container.appendChild(card);
     });
 
-    // CRITICAL: Notify Carrd to resize the IFrame height
     const height = document.body.scrollHeight;
     window.parent.postMessage({ type: 'resize', height: height }, '*');
   }
