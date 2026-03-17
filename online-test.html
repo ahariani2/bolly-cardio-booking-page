@@ -1,0 +1,161 @@
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LX2FYGD8QG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LX2FYGD8QG');
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* 1. Reset & Layout */
+  body, html { margin: 0; padding: 0; overflow: hidden; background: transparent; min-height: 900px; }
+  
+  :root {
+    --bg-pink: #fff6fb;
+    --dark-magenta: #8b004b;
+    --header-pink: #ffdef0;
+    --bright-pink: #e4007c;
+    --white: #ffffff;
+    /* Online Class Palette */
+    --online-orange: #ff8c42;
+    --online-bg: #fffbf7;
+    --online-header: #ffe8d6;
+  }
+
+  .bolly-hub {
+    font-family: 'Quicksand', sans-serif;
+    max-width: 550px;
+    margin: 0 auto;
+    text-align: center;
+    background-color: var(--bg-pink);
+    padding: 20px 20px 100px 20px;
+    border-radius: 20px;
+  }
+
+  /* 2. Standard Card Styling */
+  .class-card {
+    background: var(--white); border-radius: 12px; margin-bottom: 25px;
+    overflow: hidden; border: 1px solid var(--header-pink);
+    box-shadow: 0 4px 12px rgba(139, 0, 75, 0.05); text-align: left;
+  }
+  .card-header { background-color: var(--header-pink); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+  .card-header .date-text { color: var(--dark-magenta); font-weight: 700; font-size: 1.1rem; }
+  .card-content { display: flex; padding: 20px; justify-content: space-between; align-items: center; }
+  .details-col { flex: 1; }
+  .action-col { text-align: center; display: flex; flex-direction: column; align-items: center; min-width: 130px; }
+  .theme-title { color: var(--bright-pink); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+
+  /* 3. Online Card Overrides */
+  .class-card.online { background: var(--online-bg); border-color: var(--online-header); }
+  .class-card.online .card-header { background-color: var(--online-header); }
+  .class-card.online .date-text { color: #a6511d; }
+  .class-card.online .theme-title { color: var(--online-orange); }
+  .class-card.online .book-btn { background: var(--online-orange); }
+
+  .info-icon { cursor: pointer; color: var(--online-orange); font-size: 1.1rem; vertical-align: middle; }
+  .virtual-badge { font-size: 0.8rem; color: #777; margin-top: 10px; display: flex; align-items: center; gap: 5px; }
+
+  /* 4. Modal Styling */
+  .modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000;
+  }
+  .modal-content {
+    background: white; width: 90%; max-width: 450px; border-radius: 20px;
+    padding: 25px; position: relative; text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    font-family: 'Quicksand', sans-serif;
+  }
+  .modal-header { color: var(--online-orange); font-weight: 700; font-size: 1.3rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+  .modal-close { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #999; }
+  .modal-body p { font-size: 0.95rem; line-height: 1.5; color: #444; margin-bottom: 12px; }
+  .modal-img { width: 100%; border-radius: 10px; margin-bottom: 15px; }
+
+  /* Existing Components */
+  .info-line { font-size: 0.9rem; color: #444; margin-bottom: 4px; display: block; }
+  .book-btn { background: var(--muted-magenta); color: white !important; text-decoration: none; padding: 10px 18px; border-radius: 4px; font-weight: 700; text-transform: uppercase; white-space: nowrap; }
+  .spots-label { font-size: 0.75rem; font-weight: 600; margin-top: 8px; color: var(--bright-pink); }
+</style>
+
+<div class="bolly-hub">
+  <div class="hub-header">
+    <h2>Bolly Cardio with Arushi</h2>
+    <div style="margin-bottom:30px;">
+      <span style="font-size:0.9rem; font-weight:700;">Quantity: </span>
+      <span id="qty-val">1</span>
+    </div>
+  </div>
+  <div id="class-list"></div>
+</div>
+
+<div id="infoModal" class="modal-overlay" onclick="closeModal()">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <span class="modal-close" onclick="closeModal()">&times;</span>
+    <div class="modal-header">ℹ️ Bolly Cardio at Home</div>
+    <div class="modal-body">
+      <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHRremJ4ZzRnd3B3Yng4ZzRnd3B3Yng4ZzRnd3B3Yng4ZzRnd3B3JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKMGpx4Z6aFjPj2/giphy.gif" class="modal-img" alt="Dancing">
+      <p><b>Platform:</b> Private YouTube Link</p>
+      <p>Experience the high-energy studio vibe from home! Interactive, live, and designed for all levels.</p>
+      <p style="font-size: 0.85rem; color: #888;">*Link emailed 30 mins before class starts.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentQty = 1;
+  const dateMap = {
+    'mar29': { display: 'Sunday, March 29, 2026', iso: '2026-03-29', type: 'studio', theme: 'Studio Session' },
+    'apr12': { display: 'Sunday, April 12, 2026', iso: '2026-04-12', type: 'studio', theme: 'Studio Session' },
+    'may03': { display: 'Sunday, May 03, 2026', iso: '2026-05-03', type: 'online', theme: 'Bolly Cardio At Home' }
+  };
+
+  function openModal() { document.getElementById('infoModal').style.display = 'flex'; }
+  function closeModal() { document.getElementById('infoModal').style.display = 'none'; }
+
+  function getWeeksAway(dateKey) {
+    const diff = new Date(dateMap[dateKey].iso + 'T00:00:00') - new Date().setHours(0,0,0,0);
+    const diffDays = Math.ceil(diff / (1000 * 60 * 60 * 24));
+    if (diffDays === 0) return "Today!";
+    if (diffDays < 7) return `In ${diffDays} days`;
+    return `In ${Math.ceil(diffDays / 7)} weeks`;
+  }
+
+  function renderClasses() {
+    const container = document.getElementById('class-list');
+    container.innerHTML = '';
+    Object.keys(dateMap).forEach(key => {
+      const cls = dateMap[key];
+      const isOnline = cls.type === 'online';
+      const card = document.createElement('div');
+      card.className = `class-card ${isOnline ? 'online' : ''}`;
+      card.innerHTML = `
+        <div class="card-header">
+          <span class="date-text">${cls.display}</span>
+          <span style="font-size:0.75rem; font-weight:700; opacity:0.8;">${getWeeksAway(key)}</span>
+        </div>
+        <div class="card-content">
+          <div class="details-col">
+            <span class="theme-title">
+              ${cls.theme} 
+              ${isOnline ? `<span class="info-icon" onclick="openModal()">ⓘ</span>` : ''}
+            </span>
+            <span class="info-line">10:45am (60 mins)</span>
+            <span class="info-line"><b>$${(12 * currentQty).toFixed(2)}</b></span>
+            ${isOnline ? '<div class="virtual-badge">▶️ Virtual, Online Class</div>' : '<span class="location-line" style="font-size:0.8rem; margin-top:8px; display:block;">📍 Creatives Rental Space</span>'}
+          </div>
+          <div class="action-col">
+            <a href="#" class="book-btn">BOOK</a>
+            <span class="spots-label">Spots Available</span>
+          </div>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+    window.parent.postMessage({ type: 'resize', height: document.body.scrollHeight }, '*');
+  }
+
+  renderClasses();
+</script>
