@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
 
 <style>
-  /* 1. Reset & Layout */
+  /* 1. Global Reset & Layout */
   body, html { margin: 0; padding: 0; overflow: hidden; background: transparent; min-height: 900px; }
   
   :root {
@@ -19,8 +19,9 @@
     --dark-magenta: #8b004b;
     --header-pink: #ffdef0;
     --bright-pink: #e4007c;
+    --muted-magenta: #9f2c6b;
     --white: #ffffff;
-    /* Online Class Palette */
+    /* Online Specifics */
     --online-orange: #ff8c42;
     --online-bg: #fffbf7;
     --online-header: #ffe8d6;
@@ -32,63 +33,94 @@
     margin: 0 auto;
     text-align: center;
     background-color: var(--bg-pink);
-    padding: 20px 20px 100px 20px;
+    padding: 20px 20px 100px 20px; 
     border-radius: 20px;
   }
 
-  /* 2. Standard Card Styling */
+  @media (max-width: 480px) {
+    .bolly-hub { padding: 15px 8px 100px 8px; }
+    .card-content { padding: 15px 10px; }
+    .card-header { padding: 10px 15px; }
+  }
+
+  .hub-header h2 { font-size: 1.8rem; margin-bottom: 8px; font-weight: 700; color: #333; }
+  .qty-label { font-size: 0.9rem; font-weight: 700; margin-right: 10px; color: #333; }
+  .stepper-container { display: flex; align-items: center; justify-content: center; margin-bottom: 30px; }
+  .stepper {
+    display: flex; align-items: center; background: var(--bright-pink);
+    padding: 4px 6px; border-radius: 50px; color: white; gap: 6px;
+  }
+  .step-btn { background: none; border: none; color: white; font-size: 1rem; cursor: pointer; }
+
+  /* 2. Card Components */
   .class-card {
     background: var(--white); border-radius: 12px; margin-bottom: 25px;
     overflow: hidden; border: 1px solid var(--header-pink);
-    box-shadow: 0 4px 12px rgba(139, 0, 75, 0.05); text-align: left;
+    box-shadow: 0 4px 12px rgba(139, 0, 75, 0.05);
   }
-  .card-header { background-color: var(--header-pink); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
-  .card-header .date-text { color: var(--dark-magenta); font-weight: 700; font-size: 1.1rem; }
-  .card-content { display: flex; padding: 20px; justify-content: space-between; align-items: center; }
-  .details-col { flex: 1; }
-  .action-col { text-align: center; display: flex; flex-direction: column; align-items: center; min-width: 130px; }
-  .theme-title { color: var(--bright-pink); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 8px; }
-
-  /* 3. Online Card Overrides */
+  /* Online Overrides */
   .class-card.online { background: var(--online-bg); border-color: var(--online-header); }
   .class-card.online .card-header { background-color: var(--online-header); }
   .class-card.online .date-text { color: #a6511d; }
   .class-card.online .theme-title { color: var(--online-orange); }
   .class-card.online .book-btn { background: var(--online-orange); }
 
-  .info-icon { cursor: pointer; color: var(--online-orange); font-size: 1.1rem; vertical-align: middle; }
-  .virtual-badge { font-size: 0.8rem; color: #777; margin-top: 10px; display: flex; align-items: center; gap: 5px; }
+  .card-header { background-color: var(--header-pink); padding: 12px 20px; text-align: left; }
+  .card-header .date-text { color: var(--dark-magenta); font-weight: 700; font-size: 1.1rem; }
+  .card-content { display: flex; padding: 20px; text-align: left; justify-content: space-between; align-items: center; }
+  .details-col { flex: 1; }
+  .action-col { text-align: center; display: flex; flex-direction: column; align-items: center; min-width: 130px; }
 
-  /* 4. Modal Styling */
+  .theme-title { color: var(--bright-pink); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; display: block; margin-bottom: 8px; }
+  .info-line { font-size: 0.9rem; color: #444; margin-bottom: 4px; display: block; }
+  .location-line { font-size: 0.85rem; color: #666; margin-top: 8px; display: block; }
+
+  .info-icon { cursor: pointer; color: var(--online-orange); font-size: 1rem; vertical-align: middle; margin-left: 4px; }
+
+  .book-btn {
+    background: var(--muted-magenta); color: white !important;
+    text-decoration: none; padding: 10px 18px; border-radius: 4px;
+    font-weight: 700; font-size: 1rem; text-transform: uppercase; 
+    transition: 0.2s; white-space: nowrap; 
+  }
+  .book-btn:hover { background: var(--bright-pink); }
+  .book-btn.sold-out { background: #444 !important; color: #888 !important; pointer-events: none; opacity: 0.8; }
+
+  .spots-label { font-size: 0.75rem; font-weight: 600; margin-top: 8px; color: var(--bright-pink); display: block; }
+  .label-container { min-height: 25px; margin-top: 5px; }
+  .fallback-msg { font-size: 0.7rem; color: #999; font-style: italic; }
+
+  /* Modal Styling */
   .modal-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000;
+    background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 1000;
   }
   .modal-content {
-    background: white; width: 90%; max-width: 450px; border-radius: 20px;
-    padding: 25px; position: relative; text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    background: white; width: 90%; max-width: 480px; border-radius: 20px;
+    padding: 30px; position: relative; text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     font-family: 'Quicksand', sans-serif;
   }
-  .modal-header { color: var(--online-orange); font-weight: 700; font-size: 1.3rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-  .modal-close { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #999; }
-  .modal-body p { font-size: 0.95rem; line-height: 1.5; color: #444; margin-bottom: 12px; }
-  .modal-img { width: 100%; border-radius: 10px; margin-bottom: 15px; }
-
-  /* Existing Components */
-  .info-line { font-size: 0.9rem; color: #444; margin-bottom: 4px; display: block; }
-  .book-btn { background: var(--muted-magenta); color: white !important; text-decoration: none; padding: 10px 18px; border-radius: 4px; font-weight: 700; text-transform: uppercase; white-space: nowrap; }
-  .spots-label { font-size: 0.75rem; font-weight: 600; margin-top: 8px; color: var(--bright-pink); }
+  .modal-close { position: absolute; top: 15px; right: 20px; font-size: 1.8rem; cursor: pointer; color: #bbb; }
+  .modal-header { color: var(--online-orange); font-weight: 700; font-size: 1.2rem; margin-bottom: 15px; }
+  .modal-body p { font-size: 0.9rem; line-height: 1.5; color: #444; margin-bottom: 12px; }
+  .modal-body b { color: #333; }
 </style>
 
 <div class="bolly-hub">
   <div class="hub-header">
     <h2>Bolly Cardio with Arushi</h2>
-    <div style="margin-bottom:30px;">
-      <span style="font-size:0.9rem; font-weight:700;">Quantity: </span>
-      <span id="qty-val">1</span>
+    <div class="stepper-container">
+      <span class="qty-label">Quantity</span>
+      <div class="stepper">
+        <button class="step-btn" onclick="changeQty(-1)">−</button>
+        <span id="qty-val">1</span>
+        <button class="step-btn" onclick="changeQty(1)">+</button>
+      </div>
     </div>
   </div>
-  <div id="class-list"></div>
+  <div id="class-list">
+    <p style="color:var(--dark-magenta); font-weight:600; padding:20px;">Loading latest classes...</p>
+  </div>
 </div>
 
 <div id="infoModal" class="modal-overlay" onclick="closeModal()">
@@ -96,66 +128,121 @@
     <span class="modal-close" onclick="closeModal()">&times;</span>
     <div class="modal-header">ℹ️ Bolly Cardio at Home</div>
     <div class="modal-body">
-      <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHRremJ4ZzRnd3B3Yng4ZzRnd3B3Yng4ZzRnd3B3Yng4ZzRnd3B3JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKMGpx4Z6aFjPj2/giphy.gif" class="modal-img" alt="Dancing">
-      <p><b>Platform:</b> Private YouTube Link</p>
-      <p>Experience the high-energy studio vibe from home! Interactive, live, and designed for all levels.</p>
-      <p style="font-size: 0.85rem; color: #888;">*Link emailed 30 mins before class starts.</p>
+      <p><b>Live Online Class Details</b></p>
+      <p><b>Location:</b> 100% Virtual (Join from anywhere!)</p>
+      <p><b>Platform:</b> Private Link (Emailed to you before class)</p>
+      <p>Experience the high-energy Bolly Cardio studio vibe from the comfort of your own home! Our online classes are live, interactive, and designed for all levels. Whether you’re in Atlanta or halfway across the world, you can dance with us.</p>
+      <p><b>Watch an Example:</b> Check out our latest YouTube session to see Arushi’s teaching style and the type of high-energy tracks we’ll be dancing to.</p>
+      <p style="font-size: 0.85rem; color: #666; font-style: italic;">This is a real-time, interactive session. All you need is a stable internet connection and a device with YouTube. We recommend casting to your TV for the best experience!</p>
     </div>
   </div>
 </div>
 
 <script>
   let currentQty = 1;
+  let cachedData = null;
+  const WORKER_URL = 'https://bolly-cardio-api.ahariani2.workers.dev/';
+  const ACUITY_BASE = "https://bollycardiowitharushi.as.me/schedule/de43052c/appointment/80746158/calendar/12423814/datetime/";
+  const TIME_SUFFIX = "T10%3A45%3A00-04%3A00";
+
+  // ADDED: May 3rd Online Test
   const dateMap = {
-    'mar29': { display: 'Sunday, March 29, 2026', iso: '2026-03-29', type: 'studio', theme: 'Studio Session' },
-    'apr12': { display: 'Sunday, April 12, 2026', iso: '2026-04-12', type: 'studio', theme: 'Studio Session' },
-    'may03': { display: 'Sunday, May 03, 2026', iso: '2026-05-03', type: 'online', theme: 'Bolly Cardio At Home' }
+    'mar29': { display: 'Sunday, March 29, 2026', iso: '2026-03-29', type: 'studio' },
+    'apr12': { display: 'Sunday, April 12, 2026', iso: '2026-04-12', type: 'studio' },
+    'may03': { display: 'Sunday, May 03, 2026', iso: '2026-05-03', type: 'online' }
   };
 
   function openModal() { document.getElementById('infoModal').style.display = 'flex'; }
   function closeModal() { document.getElementById('infoModal').style.display = 'none'; }
 
   function getWeeksAway(dateKey) {
-    const diff = new Date(dateMap[dateKey].iso + 'T00:00:00') - new Date().setHours(0,0,0,0);
-    const diffDays = Math.ceil(diff / (1000 * 60 * 60 * 24));
+    const classDate = new Date(dateMap[dateKey].iso + 'T00:00:00');
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const diffDays = Math.ceil((classDate - today) / (1000 * 60 * 60 * 24));
     if (diffDays === 0) return "Today!";
-    if (diffDays < 7) return `In ${diffDays} days`;
-    return `In ${Math.ceil(diffDays / 7)} weeks`;
+    if (diffDays > 0 && diffDays < 7) return `In ${diffDays} day${diffDays > 1 ? 's' : ''}`;
+    const weeks = Math.ceil(diffDays / 7);
+    return weeks > 0 ? `In ${weeks} weeks` : "Soon!";
   }
 
-  function renderClasses() {
+  function renderClasses(data) {
+    cachedData = data;
     const container = document.getElementById('class-list');
     container.innerHTML = '';
+
     Object.keys(dateMap).forEach(key => {
-      const cls = dateMap[key];
-      const isOnline = cls.type === 'online';
+      const classInfo = data[key];
+      const hasLiveData = !!classInfo;
+      const isOnline = dateMap[key].type === 'online';
+      
+      let spots = dateMap[key].hardSoldOut ? 0 : 99;
+      if (hasLiveData) spots = parseInt(classInfo.spots);
+
+      const theme = (classInfo && classInfo.theme) ? classInfo.theme : (isOnline ? "Bolly Cardio at Home" : "");
+      const isSoldOut = spots <= 0;
+      const isLimit = currentQty > spots;
+      const targetUrl = `${ACUITY_BASE}${dateMap[key].iso}${TIME_SUFFIX}`;
+
       const card = document.createElement('div');
       card.className = `class-card ${isOnline ? 'online' : ''}`;
       card.innerHTML = `
-        <div class="card-header">
-          <span class="date-text">${cls.display}</span>
-          <span style="font-size:0.75rem; font-weight:700; opacity:0.8;">${getWeeksAway(key)}</span>
+        <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+          <span class="date-text">${dateMap[key].display}</span>
+          <span style="font-size:0.75rem; font-weight:700; color:var(--muted-magenta); opacity:0.8;">${getWeeksAway(key)}</span>
         </div>
         <div class="card-content">
           <div class="details-col">
-            <span class="theme-title">
-              ${cls.theme} 
-              ${isOnline ? `<span class="info-icon" onclick="openModal()">ⓘ</span>` : ''}
-            </span>
-            <span class="info-line">10:45am (60 mins)</span>
-            <span class="info-line"><b>$${(12 * currentQty).toFixed(2)}</b></span>
-            ${isOnline ? '<div class="virtual-badge">▶️ Virtual, Online Class</div>' : '<span class="location-line" style="font-size:0.8rem; margin-top:8px; display:block;">📍 Creatives Rental Space</span>'}
+            ${theme ? `
+              <span class="theme-title">
+                ${theme} ${isOnline ? `<span class="info-icon" onclick="openModal()">ⓘ</span>` : ''}
+              </span>` : ''}
+            <span class="info-line"><b>10:45am</b> (60 mins)</span>
+            <span class="info-line price-display">$${(12 * currentQty).toFixed(2)}</span>
+            ${isOnline ? '<span class="location-line">▶️ Live Online Class</span>' : '<span class="location-line">📍 Creatives Rental Space</span>'}
           </div>
           <div class="action-col">
-            <a href="#" class="book-btn">BOOK</a>
-            <span class="spots-label">Spots Available</span>
+            <a href="${targetUrl}?quantity=${currentQty}" 
+               target="_blank" rel="noopener"
+               onclick="gtag('event', 'click_book', {'event_label': '${key}'})"
+               class="book-btn ${isSoldOut || isLimit ? 'sold-out' : ''}">
+               ${isSoldOut ? 'SOLD OUT' : (isLimit ? 'LIMIT REACHED' : 'BOOK')}
+            </a>
+            <div class="label-container">
+              ${(hasLiveData || dateMap[key].hardSoldOut) ? (
+                // Preserve the 45-spot threshold for Studio, but hide for Online per request
+                (spots <= 45 && !isOnline) ? `
+                  <span class="spots-label" style="color: ${spots <= 10 ? 'var(--bright-pink)' : 'var(--muted-magenta)'}">
+                    ${isSoldOut ? 'No spots remaining' : (spots <= 10 ? `Only ${spots} left!` : `${spots} spots left`)}
+                  </span>
+                ` : ''
+              ) : '<span class="fallback-msg">Checking availability...</span>'}
+            </div>
           </div>
         </div>
       `;
       container.appendChild(card);
     });
-    window.parent.postMessage({ type: 'resize', height: document.body.scrollHeight }, '*');
+
+    const height = document.body.scrollHeight;
+    window.parent.postMessage({ type: 'resize', height: height }, '*');
   }
 
-  renderClasses();
+  function changeQty(delta) {
+    const newVal = currentQty + delta;
+    if (newVal >= 1 && newVal <= 15) {
+      currentQty = newVal;
+      document.getElementById('qty-val').innerText = currentQty;
+      if (cachedData) renderClasses(cachedData);
+    }
+  }
+
+  function fetchAndRender() {
+    fetch(`${WORKER_URL}?t=${Date.now()}`, { cache: 'no-store' })
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(renderClasses)
+      .catch(() => renderClasses({}));
+  }
+
+  fetchAndRender();
 </script>
