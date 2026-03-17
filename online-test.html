@@ -74,7 +74,7 @@
 
   .theme-title { color: var(--bright-pink); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; display: block; margin-bottom: 8px; }
   .info-line { font-size: 0.9rem; color: #444; margin-bottom: 4px; display: block; }
-  .location-line { font-size: 0.85rem; color: #666; margin-top: 8px; display: block; }
+  .location-line { font-size: 0.85rem; color: #666; margin-top: 8px; display: block; margin-bottom: 8px; }
 
   /* NEW: Stylized Help/Info Icon */
   .info-icon-svg { 
@@ -146,8 +146,8 @@
 
 <div id="infoModal" class="modal-overlay" onclick="closeModal()">
   <div class="modal-content" onclick="event.stopPropagation()">
-    <span class="modal-close" onclick="closeModal()">&times;</span>
-    <div class="modal-header">  <svg class="info-icon-svg" onclick="openModal()" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <span class="modal-close" onclick="closeModal()">×</span>
+    <div class="modal-header"> <svg class="info-icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
                   </svg> Bolly Cardio at Home</div>
     <div class="modal-body">
@@ -159,7 +159,7 @@
       
 
       <p>Experience the high-energy Bolly Cardio studio vibe from the comfort of your own home! Our online classes are live, interactive, and designed for all levels. Whether you’re in Atlanta or halfway across the world, you can dance with us.</p>
-      <p><b>Watch an Example:</b> Check out our latest <a href="https://www.youtube.com/watch?v=_2mkL_mWItA">YouTube session</a> to see Arushi’s teaching style and the type of high-energy tracks we’ll be dancing to.</p>
+      <p><b>Watch an Example:</b> Check out our latest <a href="https://www.youtube.com/watch?v=_2mkL_mWItA" target="_blank">YouTube session</a> to see Arushi’s teaching style and the type of high-energy tracks we’ll be dancing to.</p>
       <p style="font-size: 0.85rem; color: #666; font-style: italic;">This is a real-time, interactive session. All you need is a stable internet connection and a device with YouTube. We recommend casting to your TV for the best experience!</p>
     </div>
   </div>
@@ -215,7 +215,7 @@
       card.innerHTML = `
         <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
           <span class="date-text">${dateMap[key].display}</span>
-          <span style="font-size:0.75rem; font-weight:700; color:var(--muted-magenta); opacity:0.8;">${getWeeksAway(key)}</span>
+          <span style="font-size:0.75rem; font-weight:700; color:${isOnline ? '#a6511d' : 'var(--muted-magenta)'}; opacity:0.8;">${getWeeksAway(key)}</span>
         </div>
         <div class="card-content">
           <div class="details-col">
