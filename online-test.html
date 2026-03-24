@@ -73,7 +73,24 @@
 
   .theme-title { color: var(--bright-pink); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; display: block; margin-bottom: 8px; }
   .info-line { font-size: 0.9rem; color: #444; margin-bottom: 4px; display: block; }
-  .location-line { font-size: 0.85rem; color: #666; margin-top: 8px; display: block; margin-bottom: 8px; }
+  
+  /* UPDATED: Location Interaction Styles */
+  .location-line { 
+    font-size: 0.85rem; 
+    color: #666; 
+    margin-top: 8px; 
+    display: block; 
+    text-decoration: none;
+    transition: 0.2s;
+    cursor: pointer;
+  }
+  .location-line:hover {
+    color: var(--muted-magenta);
+    text-decoration: underline;
+  }
+  .class-card.online .location-line:hover {
+    color: var(--online-orange);
+  }
 
   .info-icon-svg { 
     width: 18px; height: 18px; cursor: pointer; fill: var(--online-orange); 
@@ -104,7 +121,7 @@
     font-family: 'Quicksand', sans-serif;
   }
   .modal-close { position: absolute; top: 15px; right: 20px; font-size: 1.8rem; cursor: pointer; color: #bbb; }
-  .modal-header { color: var(--online-orange); font-weight: 700; font-size: 1.2rem; margin-bottom: 15px; }
+  .modal-header { color: var(--online-orange); font-weight: 700; font-size: 1.2rem; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
   .modal-img { width: 100%; border-radius: 12px; margin-bottom: 20px; display: block; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
   
   .youtube-cta { font-size: 0.85rem; color: #666; margin-top: 35px; line-height: 1.5; padding: 0 10px; }
@@ -135,7 +152,10 @@
 <div id="infoModal" class="modal-overlay" onclick="closeModal()">
   <div class="modal-content" onclick="event.stopPropagation()">
     <span class="modal-close" onclick="closeModal()">×</span>
-    <div class="modal-header"> <svg class="info-icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>Online Classes</div>
+    <div class="modal-header">
+      <svg class="info-icon-svg" style="margin-left:0; margin-right:4px;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg> 
+      Bolly Cardio at Home
+    </div>
     <div class="modal-body">
       <p>Online Class Details</p>
       <p><b>Location:</b> 100% Virtual (Join from anywhere!)</p>
@@ -152,6 +172,7 @@
   let currentQty = 1;
   let cachedData = null;
   const WORKER_URL = 'https://bolly-cardio-api.ahariani2.workers.dev/';
+  const MAPS_URL = "https://www.google.com/maps/search/?api=1&query=Creatives+Rental+Space+Atlanta";
 
   const classConfigs = {
     'studio': {
@@ -214,7 +235,6 @@
       const isSoldOut = spots <= 0;
       const isLimit = currentQty > spots;
 
-      // Builds the Acuity URL using the IDs from classConfigs
       const targetUrl = `${ACUITY_ROOT}${config.appointmentId}/calendar/${config.calendarId}/datetime/${dateInfo.iso}${TIME_SUFFIX}`;
 
       const card = document.createElement('div');
@@ -231,7 +251,11 @@
             </span>
             <span class="info-line"><b>10:45am</b> (60 mins)</span>
             <span class="info-line price-display">$${(config.price * currentQty).toFixed(2)}</span>
-            <span class="location-line">${config.locationLabel}</span>
+            
+            ${isOnline ? 
+              `<a href="javascript:void(0)" onclick="openModal()" class="location-line">${config.locationLabel}</a>` : 
+              `<a href="${MAPS_URL}" target="_blank" rel="noopener" class="location-line">${config.locationLabel}</a>`
+            }
           </div>
           <div class="action-col">
             <a href="${targetUrl}?quantity=${currentQty}" 
@@ -260,13 +284,10 @@
     cachedData = data;
     const container = document.getElementById('class-list');
     container.innerHTML = '';
-
     const studioKeys = Object.keys(dateMap).filter(key => dateMap[key].type === 'studio');
     const onlineKeys = Object.keys(dateMap).filter(key => dateMap[key].type === 'online');
-
     renderSection(studioKeys, "Atlanta Studio Classes", false);
     renderSection(onlineKeys, "Bolly Cardio At Home", true);
-
     window.parent.postMessage({ type: 'resize', height: document.body.scrollHeight }, '*');
   }
 
