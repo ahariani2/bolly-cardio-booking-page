@@ -223,62 +223,93 @@
     const container = document.getElementById('class-list');
     container.innerHTML = '';
 
-    Object.keys(dateMap).forEach(key => {
-      const classInfo = data[key];
-      const hasLiveData = !!classInfo;
-      const isOnline = dateMap[key].type === 'online';
-      
-      let spots = dateMap[key].hardSoldOut ? 0 : 99;
-      if (hasLiveData) spots = parseInt(classInfo.spots);
+    // 1. Group the keys by type
+    const studioKeys = Object.keys(dateMap).filter(key => dateMap[key].type === 'studio');
+    const onlineKeys = Object.keys(dateMap).filter(key => dateMap[key].type === 'online');
 
-      const theme = (classInfo && classInfo.theme) ? classInfo.theme : (isOnline ? "Bolly Cardio at Home" : "");
-      const isSoldOut = spots <= 0;
-      const isLimit = currentQty > spots;
-      const targetUrl = `${ACUITY_BASE}${dateMap[key].iso}${TIME_SUFFIX}`;
+    // 2. Helper to render a section
+    const renderSection = (keys, title, isOnline) => {
+      if (keys.length === 0) return;
 
-      const card = document.createElement('div');
-      card.className = `class-card ${isOnline ? 'online' : ''}`;
-      card.innerHTML = `
-        <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
-          <span class="date-text">${dateMap[key].display}</span>
-          <span style="font-size:0.75rem; font-weight:700; color:${isOnline ? '#a6511d' : 'var(--muted-magenta)'}; opacity:0.8;">${getWeeksAway(key)}</span>
-        </div>
-        <div class="card-content">
-          <div class="details-col">
-            ${theme ? `
-              <span class="theme-title">
-                ${theme} 
-                ${isOnline ? `
-                  <svg class="info-icon-svg" onclick="openModal()" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
-                  </svg>
-                ` : ''}
-              </span>` : ''}
-            <span class="info-line"><b>10:45am</b> (60 mins)</span>
-            <span class="info-line price-display">$${(12 * currentQty).toFixed(2)}</span>
-            ${isOnline ? '<span class="location-line">▶️ Live Online Class</span>' : '<span class="location-line">📍 Creatives Rental Space</span>'}
+      // Create Section Header
+      const header = document.createElement('div');
+      header.style = `
+        margin: 40px 0 20px 0;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: ${isOnline ? 'var(--online-orange)' : 'var(--muted-magenta)'};
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        opacity: 0.8;
+      `;
+      header.innerHTML = `<span style="flex-grow:1; height:1px; background:currentColor; opacity:0.2;"></span> ${title} <span style="flex-grow:1; height:1px; background:currentColor; opacity:0.2;"></span>`;
+      container.appendChild(header);
+
+      // Render Cards for this section
+      keys.forEach(key => {
+        const classInfo = data[key];
+        const hasLiveData = !!classInfo;
+        
+        let spots = dateMap[key].hardSoldOut ? 0 : 99;
+        if (hasLiveData) spots = parseInt(classInfo.spots);
+
+        const theme = (classInfo && classInfo.theme) ? classInfo.theme : (isOnline ? "Bolly Cardio at Home" : "");
+        const isSoldOut = spots <= 0;
+        const isLimit = currentQty > spots;
+        const targetUrl = `${ACUITY_BASE}${dateMap[key].iso}${TIME_SUFFIX}`;
+
+        const card = document.createElement('div');
+        card.className = `class-card ${isOnline ? 'online' : ''}`;
+        card.innerHTML = `
+          <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="date-text">${dateMap[key].display}</span>
+            <span style="font-size:0.75rem; font-weight:700; color:${isOnline ? '#a6511d' : 'var(--muted-magenta)'}; opacity:0.8;">${getWeeksAway(key)}</span>
           </div>
-          <div class="action-col">
-            <a href="${targetUrl}?quantity=${currentQty}" 
-               target="_blank" rel="noopener"
-               onclick="gtag('event', 'click_book', {'event_label': '${key}'})"
-               class="book-btn ${isSoldOut || isLimit ? 'sold-out' : ''}">
-               ${isSoldOut ? 'SOLD OUT' : (isLimit ? 'LIMIT REACHED' : 'BOOK')}
-            </a>
-            <div class="label-container">
-              ${(hasLiveData || dateMap[key].hardSoldOut) ? (
-                (spots <= 45 && !isOnline) ? `
-                  <span class="spots-label" style="color: ${spots <= 10 ? 'var(--bright-pink)' : 'var(--muted-magenta)'}">
-                    ${isSoldOut ? 'No spots remaining' : (spots <= 10 ? `Only ${spots} left!` : `${spots} spots left`)}
-                  </span>
-                ` : ''
-              ) : ''}
+          <div class="card-content">
+            <div class="details-col">
+              ${theme ? `
+                <span class="theme-title">
+                  ${theme} 
+                  ${isOnline ? `
+                    <svg class="info-icon-svg" onclick="openModal()" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                  ` : ''}
+                </span>` : ''}
+              <span class="info-line"><b>10:45am</b> (60 mins)</span>
+              <span class="info-line price-display">$${(12 * currentQty).toFixed(2)}</span>
+              ${isOnline ? '<span class="location-line">▶️ Live Online Class</span>' : '<span class="location-line">📍 Creatives Rental Space</span>'}
+            </div>
+            <div class="action-col">
+              <a href="${targetUrl}?quantity=${currentQty}" 
+                 target="_blank" rel="noopener"
+                 onclick="gtag('event', 'click_book', {'event_label': '${key}'})"
+                 class="book-btn ${isSoldOut || isLimit ? 'sold-out' : ''}">
+                 ${isSoldOut ? 'SOLD OUT' : (isLimit ? 'LIMIT REACHED' : 'BOOK')}
+              </a>
+              <div class="label-container">
+                ${(hasLiveData || dateMap[key].hardSoldOut) ? (
+                  (spots <= 45 && !isOnline) ? `
+                    <span class="spots-label" style="color: ${spots <= 10 ? 'var(--bright-pink)' : 'var(--muted-magenta)'}">
+                      ${isSoldOut ? 'No spots remaining' : (spots <= 10 ? `Only ${spots} left!` : `${spots} spots left`)}
+                    </span>
+                  ` : ''
+                ) : ''}
+              </div>
             </div>
           </div>
-        </div>
-      `;
-      container.appendChild(card);
-    });
+        `;
+        container.appendChild(card);
+      });
+    };
+
+    // 3. Execute the partitioned render
+    renderSection(studioKeys, "Atlanta Studio Classes", false);
+    renderSection(onlineKeys, "Bolly Cardio At Home", true);
 
     const height = document.body.scrollHeight;
     window.parent.postMessage({ type: 'resize', height: height }, '*');
