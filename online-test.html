@@ -59,7 +59,6 @@
     overflow: hidden; border: 1px solid var(--header-pink);
     box-shadow: 0 4px 12px rgba(139, 0, 75, 0.05);
   }
-  /* Online Overrides */
   .class-card.online { background: var(--online-bg); border-color: var(--online-header); }
   .class-card.online .card-header { background-color: var(--online-header); }
   .class-card.online .date-text { color: #a6511d; }
@@ -76,15 +75,9 @@
   .info-line { font-size: 0.9rem; color: #444; margin-bottom: 4px; display: block; }
   .location-line { font-size: 0.85rem; color: #666; margin-top: 8px; display: block; margin-bottom: 8px; }
 
-  /* NEW: Stylized Help/Info Icon */
   .info-icon-svg { 
-    width: 18px; 
-    height: 18px; 
-    cursor: pointer; 
-    fill: var(--online-orange); 
-    vertical-align: middle; 
-    margin-left: 6px; 
-    transition: transform 0.2s;
+    width: 18px; height: 18px; cursor: pointer; fill: var(--online-orange); 
+    vertical-align: middle; margin-left: 6px; transition: transform 0.2s;
   }
   .info-icon-svg:hover { transform: scale(1.1); }
 
@@ -95,13 +88,10 @@
     transition: 0.2s; white-space: nowrap; 
   }
   .book-btn:hover { background: var(--bright-pink); }
-   .book-btn.sold-out { background: #fdf0f7 !important; /* Soft light pink */
-    color: #d4a5bc !important; /* Faded magenta text */
-                      pointer-events: none; opacity: 0.8; }
+  .book-btn.sold-out { background: #fdf0f7 !important; color: #d4a5bc !important; pointer-events: none; opacity: 0.8; }
 
   .spots-label { font-size: 0.75rem; font-weight: 600; margin-top: 8px; color: var(--bright-pink); display: block; }
   .label-container { min-height: 25px; margin-top: 5px; }
-  .fallback-msg { font-size: 0.7rem; color: #999; font-style: italic; }
 
   /* 3. Modal Styling */
   .modal-overlay {
@@ -115,38 +105,11 @@
   }
   .modal-close { position: absolute; top: 15px; right: 20px; font-size: 1.8rem; cursor: pointer; color: #bbb; }
   .modal-header { color: var(--online-orange); font-weight: 700; font-size: 1.2rem; margin-bottom: 15px; }
+  .modal-img { width: 100%; border-radius: 12px; margin-bottom: 20px; display: block; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
   
-  /* NEW: Image Styling with Rounded Corners */
-  .modal-img { 
-    width: 100%; 
-    border-radius: 12px; 
-    margin-bottom: 20px; 
-    display: block;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  }
-  
-  .modal-body p { font-size: 0.9rem; line-height: 1.5; color: #444; margin-bottom: 12px; }
-  .modal-body b { color: #333; }
-
-  /* Youtube CTA Styling */
-  .youtube-cta {
-    font-size: 0.85rem;
-    color: #666;
-    margin-top: 35px;
-    line-height: 1.5;
-    padding: 0 10px;
-  }
-  .youtube-cta a {
-    color: var(--muted-magenta);
-    font-weight: 700;
-    text-decoration: none;
-    border-bottom: 1px solid var(--header-pink);
-    transition: 0.2s;
-  }
-  .youtube-cta a:hover {
-    color: var(--bright-pink);
-    border-color: var(--bright-pink);
-  }
+  .youtube-cta { font-size: 0.85rem; color: #666; margin-top: 35px; line-height: 1.5; padding: 0 10px; }
+  .youtube-cta a { color: var(--muted-magenta); font-weight: 700; text-decoration: none; border-bottom: 1px solid var(--header-pink); transition: 0.2s; }
+  .youtube-cta a:hover { color: var(--bright-pink); border-color: var(--bright-pink); }
 </style>
 
 <div class="bolly-hub">
@@ -164,7 +127,6 @@
   <div id="class-list">
     <p style="color:var(--dark-magenta); font-weight:600; padding:20px;">Loading latest classes...</p>
   </div>
-
   <div class="youtube-cta">
     Can't wait for class? Try our <a href="https://www.youtube.com/watch?v=_2mkL_mWItA&utm_source=bolly_hub&utm_medium=referral&utm_campaign=wait_for_class" target="_blank" rel="noopener">10-min Bolly Cardio YouTube workout</a> from home now!
   </div>
@@ -173,17 +135,12 @@
 <div id="infoModal" class="modal-overlay" onclick="closeModal()">
   <div class="modal-content" onclick="event.stopPropagation()">
     <span class="modal-close" onclick="closeModal()">×</span>
-    <div class="modal-header"> <svg class="info-icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
-                  </svg> Bolly Cardio at Home</div>
+    <div class="modal-header"> <svg class="info-icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg> Bolly Cardio at Home</div>
     <div class="modal-body">
-      <p>Live Online Class Details</p>
+      <p>Online Class Details</p>
       <p><b>Location:</b> 100% Virtual (Join from anywhere!)</p>
       <p><b>Platform:</b> Private Link (Emailed to you before class)</p>
-      
       <a href="https://www.youtube.com/watch?v=_2mkL_mWItA&utm_source=bolly_hub&utm_medium=referral&utm_campaign=info_modal_photo" target="_blank"><img src="https://lh3.googleusercontent.com/d/1pZ_U6Tf6fZW954vLxZ7k0RRDn_veS91F" class="modal-img" alt="Bolly Cardio at Home"></a>
-      
-
       <p>Experience the high-energy Bolly Cardio studio vibe from the comfort of your own home! Our online classes are live, interactive, and designed for all levels. Whether you’re in Atlanta or halfway across the world, you can dance with us.</p>
       <p><b>Watch an Example:</b> Check out our latest <a href="https://www.youtube.com/watch?v=_2mkL_mWItA&utm_source=bolly_hub&utm_medium=referral&utm_campaign=info_modal_link" target="_blank">YouTube session</a> to see Arushi’s teaching style and the type of high-energy tracks we’ll be dancing to.</p>
       <p style="font-size: 0.85rem; color: #666; font-style: italic;">This is an online session. There is no physical in-person studio class held on this date. To participate, all you need is a stable internet connection and a device with YouTube. We recommend casting to your TV for the best experience!</p>
@@ -195,7 +152,25 @@
   let currentQty = 1;
   let cachedData = null;
   const WORKER_URL = 'https://bolly-cardio-api.ahariani2.workers.dev/';
-  const ACUITY_BASE = "https://bollycardiowitharushi.as.me/schedule/de43052c/appointment/80746158/calendar/12423814/datetime/";
+
+  const classConfigs = {
+    'studio': {
+      price: 12.00,
+      appointmentId: '80746158',
+      calendarId: '12423814',
+      locationLabel: '📍 Creatives Rental Space',
+      defaultTheme: 'Studio Session'
+    },
+    'online': {
+      price: 10.00,
+      appointmentId: '90839316',
+      calendarId: '12423814',
+      locationLabel: '▶️ Live Online Class',
+      defaultTheme: 'Bolly Cardio at Home'
+    }
+  };
+  
+  const ACUITY_ROOT = "https://bollycardiowitharushi.as.me/schedule/de43052c/appointment/";
   const TIME_SUFFIX = "T10%3A45%3A00-04%3A00";
 
   const dateMap = {
@@ -218,101 +193,81 @@
     return weeks > 0 ? `In ${weeks} weeks` : "Soon!";
   }
 
+  function renderSection(keys, title, isOnline) {
+    if (keys.length === 0) return;
+    const container = document.getElementById('class-list');
+
+    const header = document.createElement('div');
+    header.style = `margin: 40px 0 20px 0; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: ${isOnline ? 'var(--online-orange)' : 'var(--muted-magenta)'}; display: flex; align-items: center; justify-content: center; gap: 15px; opacity: 0.8;`;
+    header.innerHTML = `<span style="flex-grow:1; height:1px; background:currentColor; opacity:0.2;"></span> ${title} <span style="flex-grow:1; height:1px; background:currentColor; opacity:0.2;"></span>`;
+    container.appendChild(header);
+
+    keys.forEach(key => {
+      const dateInfo = dateMap[key];
+      const config = classConfigs[dateInfo.type];
+      const classData = cachedData ? cachedData[key] : null;
+      
+      let spots = dateInfo.hardSoldOut ? 0 : 99;
+      if (classData) spots = parseInt(classData.spots);
+
+      const theme = (classData && classData.theme) ? classData.theme : config.defaultTheme;
+      const isSoldOut = spots <= 0;
+      const isLimit = currentQty > spots;
+
+      // Builds the Acuity URL using the IDs from classConfigs
+      const targetUrl = `${ACUITY_ROOT}${config.appointmentId}/calendar/${config.calendarId}/datetime/${dateInfo.iso}${TIME_SUFFIX}`;
+
+      const card = document.createElement('div');
+      card.className = `class-card ${isOnline ? 'online' : ''}`;
+      card.innerHTML = `
+        <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+          <span class="date-text">${dateInfo.display}</span>
+          <span style="font-size:0.75rem; font-weight:700; color:${isOnline ? '#a6511d' : 'var(--muted-magenta)'}; opacity:0.8;">${getWeeksAway(key)}</span>
+        </div>
+        <div class="card-content">
+          <div class="details-col">
+            <span class="theme-title">
+              ${theme} ${isOnline ? `<svg class="info-icon-svg" onclick="openModal()" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>` : ''}
+            </span>
+            <span class="info-line"><b>10:45am</b> (60 mins)</span>
+            <span class="info-line price-display">$${(config.price * currentQty).toFixed(2)}</span>
+            <span class="location-line">${config.locationLabel}</span>
+          </div>
+          <div class="action-col">
+            <a href="${targetUrl}?quantity=${currentQty}" 
+               target="_blank" rel="noopener"
+               onclick="gtag('event', 'click_book', {'event_label': '${key}'})"
+               class="book-btn ${isSoldOut || isLimit ? 'sold-out' : ''}">
+               ${isSoldOut ? 'SOLD OUT' : (isLimit ? 'LIMIT REACHED' : 'BOOK')}
+            </a>
+            <div class="label-container">
+              ${(classData || dateInfo.hardSoldOut) ? (
+                (spots <= 45 && !isOnline) ? `
+                  <span class="spots-label" style="color: ${spots <= 10 ? 'var(--bright-pink)' : 'var(--muted-magenta)'}">
+                    ${isSoldOut ? 'No spots remaining' : (spots <= 10 ? `Only ${spots} left!` : `${spots} spots left`)}
+                  </span>
+                ` : ''
+              ) : ''}
+            </div>
+          </div>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
   function renderClasses(data) {
     cachedData = data;
     const container = document.getElementById('class-list');
     container.innerHTML = '';
 
-    // 1. Group the keys by type
     const studioKeys = Object.keys(dateMap).filter(key => dateMap[key].type === 'studio');
     const onlineKeys = Object.keys(dateMap).filter(key => dateMap[key].type === 'online');
 
-    // 2. Helper to render a section
-    const renderSection = (keys, title, isOnline) => {
-      if (keys.length === 0) return;
-
-      // Create Section Header
-      const header = document.createElement('div');
-      header.style = `
-        margin: 40px 0 20px 0;
-        font-size: 0.75rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        color: ${isOnline ? 'var(--online-orange)' : 'var(--muted-magenta)'};
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 15px;
-        opacity: 0.8;
-      `;
-      header.innerHTML = `<span style="flex-grow:1; height:1px; background:currentColor; opacity:0.2;"></span> ${title} <span style="flex-grow:1; height:1px; background:currentColor; opacity:0.2;"></span>`;
-      container.appendChild(header);
-
-      // Render Cards for this section
-      keys.forEach(key => {
-        const classInfo = data[key];
-        const hasLiveData = !!classInfo;
-        
-        let spots = dateMap[key].hardSoldOut ? 0 : 99;
-        if (hasLiveData) spots = parseInt(classInfo.spots);
-
-        const theme = (classInfo && classInfo.theme) ? classInfo.theme : (isOnline ? "Bolly Cardio at Home" : "");
-        const isSoldOut = spots <= 0;
-        const isLimit = currentQty > spots;
-        const targetUrl = `${ACUITY_BASE}${dateMap[key].iso}${TIME_SUFFIX}`;
-
-        const card = document.createElement('div');
-        card.className = `class-card ${isOnline ? 'online' : ''}`;
-        card.innerHTML = `
-          <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
-            <span class="date-text">${dateMap[key].display}</span>
-            <span style="font-size:0.75rem; font-weight:700; color:${isOnline ? '#a6511d' : 'var(--muted-magenta)'}; opacity:0.8;">${getWeeksAway(key)}</span>
-          </div>
-          <div class="card-content">
-            <div class="details-col">
-              ${theme ? `
-                <span class="theme-title">
-                  ${theme} 
-                  ${isOnline ? `
-                    <svg class="info-icon-svg" onclick="openModal()" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
-                    </svg>
-                  ` : ''}
-                </span>` : ''}
-              <span class="info-line"><b>10:45am</b> (60 mins)</span>
-              <span class="info-line price-display">$${(12 * currentQty).toFixed(2)}</span>
-              ${isOnline ? '<span class="location-line">▶️ Live Online Class</span>' : '<span class="location-line">📍 Creatives Rental Space</span>'}
-            </div>
-            <div class="action-col">
-              <a href="${targetUrl}?quantity=${currentQty}" 
-                 target="_blank" rel="noopener"
-                 onclick="gtag('event', 'click_book', {'event_label': '${key}'})"
-                 class="book-btn ${isSoldOut || isLimit ? 'sold-out' : ''}">
-                 ${isSoldOut ? 'SOLD OUT' : (isLimit ? 'LIMIT REACHED' : 'BOOK')}
-              </a>
-              <div class="label-container">
-                ${(hasLiveData || dateMap[key].hardSoldOut) ? (
-                  (spots <= 45 && !isOnline) ? `
-                    <span class="spots-label" style="color: ${spots <= 10 ? 'var(--bright-pink)' : 'var(--muted-magenta)'}">
-                      ${isSoldOut ? 'No spots remaining' : (spots <= 10 ? `Only ${spots} left!` : `${spots} spots left`)}
-                    </span>
-                  ` : ''
-                ) : ''}
-              </div>
-            </div>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    };
-
-    // 3. Execute the partitioned render
     renderSection(studioKeys, "Atlanta Studio Classes", false);
     renderSection(onlineKeys, "Bolly Cardio At Home", true);
 
-    const height = document.body.scrollHeight;
-    window.parent.postMessage({ type: 'resize', height: height }, '*');
+    window.parent.postMessage({ type: 'resize', height: document.body.scrollHeight }, '*');
   }
 
   function changeQty(delta) {
