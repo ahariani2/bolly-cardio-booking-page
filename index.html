@@ -117,7 +117,7 @@
   const TIME_SUFFIX = "T10%3A45%3A00-04%3A00";
 
   const dateMap = {
-    'mar29': { display: 'Sunday, March 29, 2026', iso: '2026-03-29' },
+    'mar29': { display: 'Sunday, March 29, 2026', iso: '2026-03-29', hardSoldOut: true },
     'apr12': { display: 'Sunday, April 12, 2026', iso: '2026-04-12' }
   };
 
@@ -181,7 +181,7 @@
                     ${isSoldOut ? 'No spots remaining' : (spots <= 10 ? `Only ${spots} left!` : `${spots} spots left`)}
                   </span>
                 ` : ''
-              ) : '<span class="fallback-msg">Checking availability...</span>'}
+              ) : ''}
             </div>
           </div>
         </div>
