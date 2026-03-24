@@ -76,7 +76,20 @@
 
   .theme-title { color: var(--bright-pink); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; display: block; margin-bottom: 8px; }
   .info-line { font-size: 0.9rem; color: #444; margin-bottom: 4px; display: block; }
-  .location-line { font-size: 0.85rem; color: #666; margin-top: 8px; display: block; }
+  
+  /* UPDATED: Location Link Styles */
+  .location-line { 
+    font-size: 0.85rem; 
+    color: #666; 
+    margin-top: 8px; 
+    display: block; 
+    text-decoration: none;
+    transition: 0.2s;
+  }
+  .location-line:hover {
+    color: var(--muted-magenta);
+    text-decoration: underline;
+  }
 
   .book-btn {
     background: var(--muted-magenta); color: white !important;
@@ -85,6 +98,7 @@
     transition: 0.2s; white-space: nowrap; 
   }
   .book-btn:hover { background: var(--bright-pink); }
+  
   .book-btn.sold-out { background: #fdf0f7 !important; /* Soft light pink */
     color: #d4a5bc !important; /* Faded magenta text */
                       pointer-events: none; opacity: 0.8; }
@@ -93,8 +107,6 @@
   .label-container { min-height: 25px; margin-top: 5px; }
   .fallback-msg { font-size: 0.7rem; color: #999; font-style: italic; }
 
-  
-  /* Youtube CTA Styling */
   .youtube-cta {
     font-size: 0.85rem;
     color: #666;
@@ -127,10 +139,11 @@
       </div>
     </div>
   </div>
+  
   <div id="class-list">
     <p style="color:var(--dark-magenta); font-weight:600; padding:20px;">Loading latest classes...</p>
   </div>
-  
+
   <div class="youtube-cta">
     Can't wait for class? Try our <a href="https://www.youtube.com/watch?v=_2mkL_mWItA&utm_source=bolly_hub&utm_medium=referral&utm_campaign=wait_for_class" target="_blank" rel="noopener">10-min Bolly Cardio YouTube workout</a> from home now!
   </div>
@@ -143,6 +156,8 @@
   const ACUITY_BASE = "https://bollycardiowitharushi.as.me/schedule/de43052c/appointment/80746158/calendar/12423814/datetime/";
   const TIME_SUFFIX = "T10%3A45%3A00-04%3A00";
 
+  const MAPS_URL = "https://www.google.com/maps/search/?api=1&query=Creatives+Rental+Space+Atlanta";
+
   const dateMap = {
     'mar29': { display: 'Sunday, March 29, 2026', iso: '2026-03-29', hardSoldOut: true },
     'apr12': { display: 'Sunday, April 12, 2026', iso: '2026-04-12' }
@@ -152,12 +167,9 @@
     const classDate = new Date(dateMap[dateKey].iso + 'T00:00:00');
     const today = new Date();
     today.setHours(0,0,0,0);
-    
     const diffDays = Math.ceil((classDate - today) / (1000 * 60 * 60 * 24));
-    
     if (diffDays === 0) return "Today!";
     if (diffDays > 0 && diffDays < 7) return `In ${diffDays} day${diffDays > 1 ? 's' : ''}`;
-    
     const weeks = Math.ceil(diffDays / 7);
     return weeks > 0 ? `In ${weeks} weeks` : "Soon!";
   }
@@ -170,10 +182,8 @@
     Object.keys(dateMap).forEach(key => {
       const classInfo = data[key];
       const hasLiveData = !!classInfo;
-      
       let spots = dateMap[key].hardSoldOut ? 0 : 99;
       if (hasLiveData) spots = parseInt(classInfo.spots);
-
       const theme = (classInfo && classInfo.theme) ? classInfo.theme : "";
       const isSoldOut = spots <= 0;
       const isLimit = currentQty > spots;
@@ -191,7 +201,7 @@
             ${theme ? `<span class="theme-title">${theme}</span>` : ''}
             <span class="info-line"><b>10:45am</b> (60 mins)</span>
             <span class="info-line price-display">$${(12 * currentQty).toFixed(2)}</span>
-            <span class="location-line">📍 Creatives Rental Space</span>
+            <a href="${MAPS_URL}" target="_blank" rel="noopener" class="location-line">📍 Creatives Rental Space</a>
           </div>
           <div class="action-col">
             <a href="${targetUrl}?quantity=${currentQty}" 
@@ -202,7 +212,6 @@
             </a>
             <div class="label-container">
               ${(hasLiveData || dateMap[key].hardSoldOut) ? (
-                // Only show spots if it's 15 or less
                 spots <= 45 ? `
                   <span class="spots-label" style="color: ${spots <= 10 ? 'var(--bright-pink)' : 'var(--muted-magenta)'}">
                     ${isSoldOut ? 'No spots remaining' : (spots <= 10 ? `Only ${spots} left!` : `${spots} spots left`)}
