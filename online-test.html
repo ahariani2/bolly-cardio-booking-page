@@ -48,7 +48,7 @@
   .qty-label { font-size: 0.9rem; font-weight: 700; margin-right: 10px; color: #333; }
   .stepper-container { display: flex; align-items: center; justify-content: center; margin-bottom: 30px; }
   .stepper {
-    display: flex; align-items: center; background: var(--bright-pink);
+    display: flex; align-items: center; background: var(--online-orange);
     padding: 4px 6px; border-radius: 50px; color: white; gap: 6px;
   }
   .step-btn { background: none; border: none; color: white; font-size: 1rem; cursor: pointer; }
@@ -143,9 +143,6 @@
   <div id="class-list">
     <p style="color:var(--dark-magenta); font-weight:600; padding:20px;">Loading latest classes...</p>
   </div>
-  <div class="youtube-cta">
-    Can't wait for class? Try our <a href="https://www.youtube.com/watch?v=_2mkL_mWItA&utm_source=bolly_hub&utm_medium=referral&utm_campaign=wait_for_class" target="_blank" rel="noopener">10-min Bolly Cardio YouTube workout</a> from home now!
-  </div>
 </div>
 
 <div id="infoModal" class="modal-overlay" onclick="closeModal()">
@@ -198,8 +195,6 @@
   const ACUITY_ROOT = "https://bollycardiowitharushi.as.me/schedule/de43052c/appointment/";
 
   const dateMap = {
-    'mar29': { display: 'Sunday, March 29, 2026', iso: '2026-03-29', type: 'studio' },
-    'apr12': { display: 'Sunday, April 12, 2026', iso: '2026-04-12', type: 'studio' },
     'may03': { display: 'Sunday, May 03, 2026', iso: '2026-05-03', type: 'online' }
   };
 
