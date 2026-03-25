@@ -74,7 +74,6 @@
   .theme-title { color: var(--bright-pink); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; display: block; margin-bottom: 8px; }
   .info-line { font-size: 0.9rem; color: #444; margin-bottom: 4px; display: block; }
   
-  /* UPDATED: Location Interaction Styles */
   .location-line { 
     font-size: 0.85rem; 
     color: #666; 
@@ -174,25 +173,29 @@
   const WORKER_URL = 'https://bolly-cardio-api.ahariani2.workers.dev/';
   const MAPS_URL = "https://www.google.com/maps/search/?api=1&query=Creatives+Rental+Space+Atlanta";
 
+  // 1. Updated Config with new Times and Suffixes
   const classConfigs = {
     'studio': {
       price: 12.00,
+      timeLabel: '<b>10:45am EST</b> (60 mins)',
       appointmentId: '80746158',
       calendarId: '12423814',
       locationLabel: '📍 Creatives Rental Space',
-      defaultTheme: 'Studio Session'
+      defaultTheme: 'Studio Session',
+      timeSuffix: 'T10%3A45%3A00-04%3A00'
     },
     'online': {
       price: 10.00,
+      timeLabel: '<b>11:00am EST</b> (50 mins)',
       appointmentId: '90839316',
       calendarId: '12423814',
       locationLabel: '▶️ Online Class',
-      defaultTheme: 'Bolly Cardio at Home'
+      defaultTheme: 'Bolly Cardio at Home',
+      timeSuffix: 'T11%3A00%3A00-04%3A00'
     }
   };
   
   const ACUITY_ROOT = "https://bollycardiowitharushi.as.me/schedule/de43052c/appointment/";
-  const TIME_SUFFIX = "T10%3A45%3A00-04%3A00";
 
   const dateMap = {
     'mar29': { display: 'Sunday, March 29, 2026', iso: '2026-03-29', type: 'studio' },
@@ -235,7 +238,8 @@
       const isSoldOut = spots <= 0;
       const isLimit = currentQty > spots;
 
-      const targetUrl = `${ACUITY_ROOT}${config.appointmentId}/calendar/${config.calendarId}/datetime/${dateInfo.iso}${TIME_SUFFIX}`;
+      // 2. Dynamic targetUrl using config.timeSuffix
+      const targetUrl = `${ACUITY_ROOT}${config.appointmentId}/calendar/${config.calendarId}/datetime/${dateInfo.iso}${config.timeSuffix}`;
 
       const card = document.createElement('div');
       card.className = `class-card ${isOnline ? 'online' : ''}`;
@@ -249,7 +253,7 @@
             <span class="theme-title">
               ${theme} ${isOnline ? `<svg class="info-icon-svg" onclick="openModal()" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>` : ''}
             </span>
-            <span class="info-line"><b>10:45am</b> (60 mins)</span>
+            <span class="info-line">${config.timeLabel}</span>
             <span class="info-line price-display">$${(config.price * currentQty).toFixed(2)}</span>
             
             ${isOnline ? 
@@ -284,10 +288,13 @@
     cachedData = data;
     const container = document.getElementById('class-list');
     container.innerHTML = '';
+
     const studioKeys = Object.keys(dateMap).filter(key => dateMap[key].type === 'studio');
     const onlineKeys = Object.keys(dateMap).filter(key => dateMap[key].type === 'online');
+
     renderSection(studioKeys, "Atlanta Studio Classes", false);
     renderSection(onlineKeys, "Online Classes", true);
+    
     window.parent.postMessage({ type: 'resize', height: document.body.scrollHeight }, '*');
   }
 
