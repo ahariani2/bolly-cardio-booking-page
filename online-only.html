@@ -219,7 +219,7 @@
     const header = document.createElement('div');
     header.style = `margin: 40px 0 20px 0; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: ${isOnline ? 'var(--online-orange)' : 'var(--muted-magenta)'}; display: flex; align-items: center; justify-content: center; gap: 15px; opacity: 0.8;`;
     header.innerHTML = `<span style="flex-grow:1; height:1px; background:currentColor; opacity:0.2;"></span> ${title} <span style="flex-grow:1; height:1px; background:currentColor; opacity:0.2;"></span>`;
-    container.appendChild(header);
+    // container.appendChild(header);
 
     keys.forEach(key => {
       const dateInfo = dateMap[key];
