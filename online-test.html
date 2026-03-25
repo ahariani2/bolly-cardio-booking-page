@@ -48,7 +48,7 @@
   .qty-label { font-size: 0.9rem; font-weight: 700; margin-right: 10px; color: #333; }
   .stepper-container { display: flex; align-items: center; justify-content: center; margin-bottom: 30px; }
   .stepper {
-    display: flex; align-items: center; background: var(--online-orange);
+    display: flex; align-items: center; background: var(--bright-pink);
     padding: 4px 6px; border-radius: 50px; color: white; gap: 6px;
   }
   .step-btn { background: none; border: none; color: white; font-size: 1rem; cursor: pointer; }
@@ -126,6 +126,36 @@
   .youtube-cta { font-size: 0.85rem; color: #666; margin-top: 35px; line-height: 1.5; padding: 0 10px; }
   .youtube-cta a { color: var(--muted-magenta); font-weight: 700; text-decoration: none; border-bottom: 1px solid var(--header-pink); transition: 0.2s; }
   .youtube-cta a:hover { color: var(--bright-pink); border-color: var(--bright-pink); }
+
+  /* Compact state for Sold Out cards */
+  .class-card.compact {
+    margin-bottom: 10px; /* Tighter spacing for sold-out rows */
+    border-color: #eee;
+    box-shadow: none;
+    opacity: 0.7; /* Faded look to show it's "inactive" */
+  }
+
+  .class-card.compact .card-header {
+    background-color: #f9f9f9;
+    padding: 8px 15px;
+  }
+
+  .class-card.compact .date-text {
+    font-size: 0.9rem;
+    color: #888;
+  }
+
+  .compact-status {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #d4a5bc;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 1px solid #f3d4e4;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #fff;
+  }
 </style>
 
 <div class="bolly-hub">
@@ -142,6 +172,9 @@
   </div>
   <div id="class-list">
     <p style="color:var(--dark-magenta); font-weight:600; padding:20px;">Loading latest classes...</p>
+  </div>
+  <div class="youtube-cta">
+    Can't wait for class? Try our <a href="https://www.youtube.com/watch?v=_2mkL_mWItA&utm_source=bolly_hub&utm_medium=referral&utm_campaign=wait_for_class" target="_blank" rel="noopener">10-min Bolly Cardio YouTube workout</a> from home now!
   </div>
 </div>
 
@@ -195,6 +228,8 @@
   const ACUITY_ROOT = "https://bollycardiowitharushi.as.me/schedule/de43052c/appointment/";
 
   const dateMap = {
+    'mar29': { display: 'Sunday, March 29, 2026', iso: '2026-03-29', type: 'studio', hardSoldOut: true },
+    'apr12': { display: 'Sunday, April 12, 2026', iso: '2026-04-12', type: 'studio', hardSoldOut: true },
     'may03': { display: 'Sunday, May 03, 2026', iso: '2026-05-03', type: 'online' }
   };
 
@@ -229,52 +264,53 @@
       let spots = dateInfo.hardSoldOut ? 0 : 99;
       if (classData) spots = parseInt(classData.spots);
 
-      const theme = (classData && classData.theme) ? classData.theme : config.defaultTheme;
       const isSoldOut = spots <= 0;
-      const isLimit = currentQty > spots;
-
-      // 2. Dynamic targetUrl using config.timeSuffix
-      const targetUrl = `${ACUITY_ROOT}${config.appointmentId}/calendar/${config.calendarId}/datetime/${dateInfo.iso}${config.timeSuffix}`;
-
+      const theme = (classData && classData.theme) ? classData.theme : config.defaultTheme;
+      
       const card = document.createElement('div');
-      card.className = `class-card ${isOnline ? 'online' : ''}`;
-      card.innerHTML = `
-        <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
-          <span class="date-text">${dateInfo.display}</span>
-          <span style="font-size:0.75rem; font-weight:700; color:${isOnline ? '#a6511d' : 'var(--muted-magenta)'}; opacity:0.8;">${getWeeksAway(key)}</span>
-        </div>
-        <div class="card-content">
-          <div class="details-col">
-            <span class="theme-title">
-              ${theme} ${isOnline ? `<svg class="info-icon-svg" onclick="openModal()" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>` : ''}
-            </span>
-            <span class="info-line">${config.timeLabel}</span>
-            <span class="info-line price-display">$${(config.price * currentQty).toFixed(2)}</span>
-            
-            ${isOnline ? 
-              `<a href="javascript:void(0)" onclick="openModal()" class="location-line">${config.locationLabel}</a>` : 
-              `<a href="${MAPS_URL}" target="_blank" rel="noopener" class="location-line">${config.locationLabel}</a>`
-            }
+      
+      // NEW: Add 'compact' class if sold out
+      card.className = `class-card ${isOnline ? 'online' : ''} ${isSoldOut ? 'compact' : ''}`;
+
+      if (isSoldOut) {
+        // COMPACT VERSION: Just the header with a "Sold Out" tag
+        card.innerHTML = `
+          <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="date-text">${dateInfo.display}</span>
+            <span class="compact-status">Sold Out</span>
           </div>
-          <div class="action-col">
-            <a href="${targetUrl}?quantity=${currentQty}" 
-               target="_blank" rel="noopener"
-               onclick="gtag('event', 'click_book', {'event_label': '${key}'})"
-               class="book-btn ${isSoldOut || isLimit ? 'sold-out' : ''}">
-               ${isSoldOut ? 'SOLD OUT' : (isLimit ? 'LIMIT REACHED' : 'BOOK')}
-            </a>
-            <div class="label-container">
-              ${(classData || dateInfo.hardSoldOut) ? (
-                (spots <= 45 && !isOnline) ? `
-                  <span class="spots-label" style="color: ${spots <= 10 ? 'var(--bright-pink)' : 'var(--muted-magenta)'}">
-                    ${isSoldOut ? 'No spots remaining' : (spots <= 10 ? `Only ${spots} left!` : `${spots} spots left`)}
-                  </span>
-                ` : ''
-              ) : ''}
+        `;
+      } else {
+        // FULL VERSION: Your existing card HTML
+        const isLimit = currentQty > spots;
+        const targetUrl = `${ACUITY_ROOT}${config.appointmentId}/calendar/${config.calendarId}/datetime/${dateInfo.iso}${config.timeSuffix}`;
+        
+        card.innerHTML = `
+          <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="date-text">${dateInfo.display}</span>
+            <span style="font-size:0.75rem; font-weight:700; color:${isOnline ? '#a6511d' : 'var(--muted-magenta)'}; opacity:0.8;">${getWeeksAway(key)}</span>
+          </div>
+          <div class="card-content">
+            <div class="details-col">
+              <span class="theme-title">
+                ${theme} ${isOnline ? `<svg class="info-icon-svg" onclick="openModal()" ...></svg>` : ''}
+              </span>
+              <span class="info-line">${config.timeLabel}</span>
+              <span class="info-line price-display">$${(config.price * currentQty).toFixed(2)}</span>
+              ${isOnline ? 
+                `<a href="javascript:void(0)" onclick="openModal()" class="location-line">${config.locationLabel}</a>` : 
+                `<a href="${MAPS_URL}" target="_blank" class="location-line">${config.locationLabel}</a>`
+              }
+            </div>
+            <div class="action-col">
+              <a href="${targetUrl}?quantity=${currentQty}" target="_blank" class="book-btn">BOOK</a>
+              <div class="label-container">
+                ${(spots <= 45 && !isOnline) ? `<span class="spots-label">${spots} left!</span>` : ''}
+              </div>
             </div>
           </div>
-        </div>
-      `;
+        `;
+      }
       container.appendChild(card);
     });
   }
