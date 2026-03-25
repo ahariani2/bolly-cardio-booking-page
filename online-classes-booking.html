@@ -56,16 +56,18 @@
   /* 2. Card Components */
   .class-card {
     background: var(--white); border-radius: 12px; margin-bottom: 25px;
-    overflow: hidden; border: 1px solid var(--header-pink);
+    /* FIX: Changed from hidden to visible so tooltip can show */
+    overflow: visible; border: 1px solid var(--header-pink);
     box-shadow: 0 4px 12px rgba(139, 0, 75, 0.05);
+    position: relative;
   }
   .class-card.online { background: var(--online-bg); border-color: var(--online-header); }
-  .class-card.online .card-header { background-color: var(--online-header); }
+  .class-card.online .card-header { background-color: var(--online-header); border-radius: 12px 12px 0 0; }
   .class-card.online .date-text { color: #a6511d; }
   .class-card.online .theme-title { color: var(--online-orange); }
   .class-card.online .book-btn { background: var(--online-orange); }
 
-  .card-header { background-color: var(--header-pink); padding: 12px 20px; text-align: left; }
+  .card-header { background-color: var(--header-pink); padding: 12px 20px; text-align: left; border-radius: 12px 12px 0 0; }
   .card-header .date-text { color: var(--dark-magenta); font-weight: 700; font-size: 1.1rem; }
   .card-content { display: flex; padding: 20px; text-align: left; justify-content: space-between; align-items: center; }
   .details-col { flex: 1; }
@@ -74,7 +76,6 @@
   .theme-title { color: var(--bright-pink); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; display: block; margin-bottom: 8px; }
   .info-line { font-size: 0.9rem; color: #444; margin-bottom: 4px; display: block; }
   
-  /* UPDATED: Location Interaction Styles */
   .location-line { 
     font-size: 0.85rem; 
     color: #666; 
@@ -140,7 +141,7 @@
     color: var(--online-orange);
   }
 
-  /* Desktop Tooltip - Only shows on devices that support hover */
+  /* Desktop Tooltip */
   @media (hover: hover) {
     .time-trigger::after {
       content: attr(data-tooltip);
@@ -157,7 +158,7 @@
       opacity: 0;
       visibility: hidden;
       transition: 0.2s;
-      z-index: 10;
+      z-index: 9999;
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
     .time-trigger:hover::after {
@@ -165,10 +166,6 @@
       visibility: visible;
     }
   }
-
-  /* Second Modal Styling (Time Info) */
-  #timeModal .modal-header { color: var(--online-orange); }
-  #timeModal .modal-content { max-width: 400px; text-align: center; }
 </style>
 
 <div class="bolly-hub">
@@ -208,18 +205,18 @@
       <p style="font-size: 0.85rem; color: #666; font-style: italic;">This is an online session. There is no physical in-person studio class held on this date. To participate, all you need is a stable internet connection and a device with YouTube. We recommend casting to your TV for the best experience!</p>
     </div>
   </div>
+</div>
 
-  <div id="timeModal" class="modal-overlay" onclick="closeTimeModal()">
-  <div class="modal-content" onclick="event.stopPropagation()">
+<div id="timeModal" class="modal-overlay" onclick="closeTimeModal()">
+  <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 400px; text-align: center;">
     <span class="modal-close" onclick="closeTimeModal()">×</span>
-    <div class="modal-header">🕒 48-Hour Replay</div>
+    <div class="modal-header" style="justify-content: center; color: var(--online-orange);">🕒 48-Hour Replay</div>
     <div class="modal-body">
       <p><b>Can't make it live? No worries!</b></p>
       <p>The "At Home" class link is viewable for <b>48 hours</b>!</p>
       <button onclick="closeTimeModal()" class="book-btn" style="background:var(--online-orange); width:100%; margin-top:10px;">GOT IT!</button>
     </div>
   </div>
-</div>
 </div>
 
 <script>
@@ -229,20 +226,8 @@
   const MAPS_URL = "https://www.google.com/maps/search/?api=1&query=Creatives+Rental+Space+Atlanta";
 
   const classConfigs = {
-    'studio': {
-      price: 12.00,
-      appointmentId: '80746158',
-      calendarId: '12423814',
-      locationLabel: '📍 Creatives Rental Space',
-      defaultTheme: 'Studio Session'
-    },
-    'online': {
-      price: 10.00,
-      appointmentId: '90839316',
-      calendarId: '12423814',
-      locationLabel: '▶️ Online Class',
-      defaultTheme: 'Bolly Cardio at Home'
-    }
+    'studio': { price: 12.00, appointmentId: '80746158', calendarId: '12423814', locationLabel: '📍 Creatives Rental Space', defaultTheme: 'Studio Session' },
+    'online': { price: 10.00, appointmentId: '90839316', calendarId: '12423814', locationLabel: '▶️ Online Class', defaultTheme: 'Bolly Cardio at Home' }
   };
   
   const ACUITY_ROOT = "https://bollycardiowitharushi.as.me/schedule/de43052c/appointment/";
@@ -256,6 +241,9 @@
 
   function openModal() { document.getElementById('infoModal').style.display = 'flex'; }
   function closeModal() { document.getElementById('infoModal').style.display = 'none'; }
+  
+  function openTimeModal() { document.getElementById('timeModal').style.display = 'flex'; }
+  function closeTimeModal() { document.getElementById('timeModal').style.display = 'none'; }
 
   function getWeeksAway(dateKey) {
     const classDate = new Date(dateMap[dateKey].iso + 'T00:00:00');
@@ -268,24 +256,9 @@
     return weeks > 0 ? `In ${weeks} weeks` : "Soon!";
   }
 
-  // MODAL LOGIC
-  function openModal() { document.getElementById('infoModal').style.display = 'flex'; }
-  function closeModal() { document.getElementById('infoModal').style.display = 'none'; }
-  
-  // NEW: Time Modal Logic
-  function openTimeModal() {
-    // Only trigger modal on mobile/touch devices
-    if (window.matchMedia("(pointer: coarse)").matches) {
-      document.getElementById('timeModal').style.display = 'flex';
-    }
-  }
-  function closeTimeModal() { document.getElementById('timeModal').style.display = 'none'; }
-
-  
   function renderSection(keys, title, isOnline) {
     if (keys.length === 0) return;
     const container = document.getElementById('class-list');
-
     const header = document.createElement('div');
     header.style = `margin: 40px 0 20px 0; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: ${isOnline ? 'var(--online-orange)' : 'var(--muted-magenta)'}; display: flex; align-items: center; justify-content: center; gap: 15px; opacity: 0.8;`;
     header.innerHTML = `<span style="flex-grow:1; height:1px; background:currentColor; opacity:0.2;"></span> ${title} <span style="flex-grow:1; height:1px; background:currentColor; opacity:0.2;"></span>`;
@@ -295,20 +268,13 @@
       const dateInfo = dateMap[key];
       const config = classConfigs[dateInfo.type];
       const classData = cachedData ? cachedData[key] : null;
-      
       let spots = dateInfo.hardSoldOut ? 0 : 99;
       if (classData) spots = parseInt(classData.spots);
-
       const theme = (classData && classData.theme) ? classData.theme : config.defaultTheme;
       const isSoldOut = spots <= 0;
       const isLimit = currentQty > spots;
-
       const targetUrl = `${ACUITY_ROOT}${config.appointmentId}/calendar/${config.calendarId}/datetime/${dateInfo.iso}${TIME_SUFFIX}`;
-
-      // Logic for the Time String
-      const timeDisplay = isOnline ? 
-        `<span class="time-trigger" onclick="openTimeModal()" data-tooltip="Recording available for 48 hours!">10:45am</span>` : 
-        `10:45am`;
+      const timeDisplay = isOnline ? `<span class="time-trigger" onclick="openTimeModal()" data-tooltip="Recording available for 48 hours!">10:45am</span>` : `10:45am`;
       
       const card = document.createElement('div');
       card.className = `class-card ${isOnline ? 'online' : ''}`;
@@ -320,35 +286,17 @@
         <div class="card-content">
           <div class="details-col">
             <span class="theme-title">
-              ${theme} ${isOnline ? `<svg class="info-icon-svg" onclick="openModal()" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>` : ''}
+              ${theme} ${isOnline ? `<svg class="info-icon-svg" onclick="openModal()" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>` : ''}
             </span>
             <span class="info-line"><b>${timeDisplay}</b> (60 mins)</span>
             <span class="info-line price-display">$${(config.price * currentQty).toFixed(2)}</span>
-            
-            ${isOnline ? 
-              `<a href="javascript:void(0)" onclick="openModal()" class="location-line">${config.locationLabel}</a>` : 
-              `<a href="${MAPS_URL}" target="_blank" rel="noopener" class="location-line">${config.locationLabel}</a>`
-            }
+            ${isOnline ? `<a href="javascript:void(0)" onclick="openModal()" class="location-line">${config.locationLabel}</a>` : `<a href="${MAPS_URL}" target="_blank" class="location-line">${config.locationLabel}</a>`}
           </div>
           <div class="action-col">
-            <a href="${targetUrl}?quantity=${currentQty}" 
-               target="_blank" rel="noopener"
-               onclick="gtag('event', 'click_book', {'event_label': '${key}'})"
-               class="book-btn ${isSoldOut || isLimit ? 'sold-out' : ''}">
-               ${isSoldOut ? 'SOLD OUT' : (isLimit ? 'LIMIT REACHED' : 'BOOK')}
-            </a>
-            <div class="label-container">
-              ${(classData || dateInfo.hardSoldOut) ? (
-                (spots <= 45 && !isOnline) ? `
-                  <span class="spots-label" style="color: ${spots <= 10 ? 'var(--bright-pink)' : 'var(--muted-magenta)'}">
-                    ${isSoldOut ? 'No spots remaining' : (spots <= 10 ? `Only ${spots} left!` : `${spots} spots left`)}
-                  </span>
-                ` : ''
-              ) : ''}
-            </div>
+            <a href="${targetUrl}?quantity=${currentQty}" target="_blank" class="book-btn ${isSoldOut || isLimit ? 'sold-out' : ''}">${isSoldOut ? 'SOLD OUT' : (isLimit ? 'LIMIT REACHED' : 'BOOK')}</a>
+            <div class="label-container">${(classData || dateInfo.hardSoldOut) ? ((spots <= 45 && !isOnline) ? `<span class="spots-label" style="color: ${spots <= 10 ? 'var(--bright-pink)' : 'var(--muted-magenta)'}">${isSoldOut ? 'No spots remaining' : (spots <= 10 ? 'Only ' + spots + ' left!' : spots + ' spots left')}</span>` : '') : ''}</div>
           </div>
-        </div>
-      `;
+        </div>`;
       container.appendChild(card);
     });
   }
@@ -357,22 +305,12 @@
     cachedData = data;
     const container = document.getElementById('class-list');
     container.innerHTML = '';
-    
-    // NEW: Minimal Routing Logic
     const urlParams = new URLSearchParams(window.location.search);
-    const viewFilter = urlParams.get('view'); // 'studio', 'online', or null
-
+    const viewFilter = urlParams.get('view');
     const studioKeys = Object.keys(dateMap).filter(key => dateMap[key].type === 'studio');
     const onlineKeys = Object.keys(dateMap).filter(key => dateMap[key].type === 'online');
-    
-    // Conditionals to determine which section to show
-    if (!viewFilter || viewFilter === 'studio') {
-        renderSection(studioKeys, "Atlanta Studio Classes", false);
-    }
-    if (!viewFilter || viewFilter === 'online') {
-        renderSection(onlineKeys, "Online Classes", true);
-    }
-
+    if (!viewFilter || viewFilter === 'studio') renderSection(studioKeys, "Atlanta Studio Classes", false);
+    if (!viewFilter || viewFilter === 'online') renderSection(onlineKeys, "Online Classes", true);
     window.parent.postMessage({ type: 'resize', height: document.body.scrollHeight }, '*');
   }
 
