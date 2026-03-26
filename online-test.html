@@ -102,7 +102,18 @@
   .label-container { min-height: 25px; margin-top: 5px; }
 
   /* 3. Compact & Expansion Styles */
-  .class-card.compact { cursor: pointer; border-style: dashed; }
+  /* Fade out sold-out cards to draw eye to active ones */
+  .class-card.compact { 
+    cursor: pointer; 
+    border-style: dashed; 
+    opacity: 0.6; /* The "Less Bright" look */
+    transition: opacity 0.3s ease, background 0.2s; 
+  }
+  /* Bring back to full brightness when expanded */
+  .class-card.expanded { 
+    opacity: 1 !important; 
+    border-style: solid;
+  }
   .class-card.compact:hover { background: #fafafa; }
   
   .compact-row {
@@ -119,6 +130,12 @@
   .class-card.expanded .compact-row { display: none; }
   .expand-arrow { font-size: 0.7rem; color: #999; margin-left: 8px; transition: 0.2s; }
   .class-card.expanded .expand-arrow { transform: rotate(180deg); }
+
+  /* Header Text Toggling */
+  .class-card.compact .status-weeks { display: none; } /* Hide "In X weeks" when compact */
+  .class-card.expanded .status-weeks { display: inline-block !important; } /* Show when expanded */
+  .class-card.expanded .status-sold-out, 
+  .class-card.expanded .expand-arrow { display: none !important; } /* Hide "Sold Out" when expanded */
 
   /* 4. Modal & Video Styling */
   .modal-overlay {
@@ -196,6 +213,7 @@
   const dateMap = {
     'mar29': { display: 'Sunday, March 29, 2026', iso: '2026-03-29', type: 'studio', hardSoldOut: true },
     'apr12': { display: 'Sunday, April 12, 2026', iso: '2026-04-12', type: 'studio', hardSoldOut: true },
+    'apr12_test': { display: 'Sunday, April 12, 2026', iso: '2026-04-12', type: 'studio' },
     'may03': { display: 'Sunday, May 03, 2026', iso: '2026-05-03', type: 'online' }
   };
 
@@ -235,9 +253,20 @@
         <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
           <span class="date-text">${date.display}</span>
           <div style="display:flex; align-items:center; gap:8px;">
-            ${isSoldOut ? '<span class="book-btn sold-out" style="padding:4px 10px; font-size:0.7rem;">SOLD OUT</span><span class="expand-arrow">▼</span>' : `<span style="font-size:0.75rem; font-weight:700; color:${isOnline ? '#a6511d' : 'var(--muted-magenta)'}; opacity:0.8;">${getWeeksAway(key)}</span>`}
+            <span class="status-weeks" style="font-size:0.75rem; font-weight:700; color:${isOnline ? '#a6511d' : 'var(--muted-magenta)'}; opacity:0.8;">
+              ${getWeeksAway(key)}
+            </span>
+
+            ${isSoldOut ? `
+              <span class="status-sold-out book-btn sold-out" style="padding:4px 10px; font-size:0.7rem;">SOLD OUT</span>
+              <span class="expand-arrow">▼</span>
+            ` : ''}
           </div>
         </div>
+        
+        ${isSoldOut ? `<div class="compact-row">...</div>` : ''}
+        <div class="card-content details-pane">...</div>
+      `;
         ${isSoldOut ? `<div class="compact-row"><div class="compact-info"><b>${theme}</b> • ${config.timeLabel.replace(/<\/?[^>]+(>|$)/g, "")}</div><div class="compact-location">${config.loc}</div></div>` : ''}
         <div class="card-content details-pane" ${!isSoldOut ? 'style="display:flex !important;"' : ''}>
           <div class="details-col">
