@@ -163,7 +163,13 @@
           </div>
           <div class="action-col">
             <a href="${url}?quantity=${currentQty}" target="_blank" class="book-btn ${isSoldOut ? 'sold-out' : ''}">${isSoldOut ? 'SOLD OUT' : 'BOOK'}</a>
-            <div class="label-container">${(key !== 'apr12_pm' && !isOnline && spots <= 45 && !isSoldOut) ? `<span class="spots-label">${spots} left!</span>` : ''}</div>
+            <div class="label-container">
+  ${(!isOnline && key !== 'apr12_pm') ? `
+    <span class="spots-label" style="color: ${isSoldOut ? '#d4a5bc' : (spots <= 10 ? 'var(--bright-pink)' : 'var(--muted-magenta)')}">
+      ${isSoldOut ? 'No spots remaining' : (spots <= 10 ? `Only ${spots} left!` : `${spots} spots left`)}
+    </span>
+  ` : ''}
+</div>
           </div>
         </div>`;
       container.appendChild(card);
