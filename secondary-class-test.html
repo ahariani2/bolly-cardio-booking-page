@@ -11,12 +11,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
 
 <style>
-  /* 1. Global Reset & Layout - SCROLL FIX */
+  /* 1. Global Layout & Fonts */
   * { font-family: 'Quicksand', sans-serif !important; }
   body, html { margin: 0; padding: 0; overflow: visible; background: transparent; }
   
   :root {
-    --bg-white: #ffffff;
     --dark-magenta: #8b004b;
     --header-pink: #ffdef0;
     --bright-pink: #e4007c;
@@ -30,26 +29,26 @@
     max-width: 550px;
     margin: 0 auto;
     text-align: center;
-    background-color: var(--bg-white);
+    background-color: #ffffff;
     padding: 20px 20px 100px 20px; 
     border-radius: 20px;
   }
 
-  /* 2. Card Components */
+  /* 2. Card Styling */
   .class-card {
     background: #ffffff; border-radius: 12px; margin-bottom: 25px;
     overflow: hidden; border: 1px solid var(--header-pink);
     box-shadow: 0 4px 12px rgba(139, 0, 75, 0.05);
-    transition: opacity 0.3s ease;
+    text-align: left;
   }
   .class-card.online { background: var(--online-bg); border-color: var(--online-header); }
   .class-card.online .card-header { background-color: var(--online-header); }
   .class-card.online .date-text { color: #a6511d; }
 
-  .card-header { background-color: var(--header-pink); padding: 12px 20px; text-align: left; }
+  .card-header { background-color: var(--header-pink); padding: 12px 20px; }
   .card-header .date-text { color: var(--dark-magenta); font-weight: 700; font-size: 1.1rem; }
   
-  .card-content { display: flex; padding: 20px; text-align: left; justify-content: space-between; align-items: center; }
+  .card-content { display: flex; padding: 20px; justify-content: space-between; align-items: center; }
   .details-col { flex: 1; }
   .action-col { text-align: center; display: flex; flex-direction: column; align-items: center; min-width: 130px; }
 
@@ -57,6 +56,14 @@
   .class-card.online .theme-title { color: var(--online-orange); }
   
   .info-line { font-size: 0.9rem; color: #444; margin-bottom: 4px; display: block; }
+  
+  .location-line { 
+    font-size: 0.85rem; color: #666; margin-top: 8px; display: block; 
+    text-decoration: none; transition: 0.2s; cursor: pointer;
+  }
+  .location-line:hover { text-decoration: underline; color: var(--muted-magenta); }
+  .class-card.online .location-line:hover { color: var(--online-orange); }
+
   .book-btn {
     background: var(--muted-magenta); color: white !important;
     text-decoration: none; padding: 10px 18px; border-radius: 4px;
@@ -66,11 +73,11 @@
   .class-card.online .book-btn { background: var(--online-orange); }
   .book-btn.sold-out { background: #fdf0f7 !important; color: #d4a5bc !important; pointer-events: none; opacity: 0.8; }
 
-  .spots-label { font-size: 0.75rem; font-weight: 600; margin-top: 8px; color: var(--bright-pink); display: block; }
+  .spots-label { font-size: 0.75rem; font-weight: 600; margin-top: 8px; }
 
-  /* 3. Modal & Video */
+  /* 3. Modal & UI Helpers */
   .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 1000; }
-  .modal-content { background: white; width: 90%; max-width: 480px; border-radius: 20px; padding: 30px; position: relative; text-align: left; }
+  .modal-content { background: white; width: 90%; max-width: 480px; border-radius: 20px; padding: 30px; position: relative; }
   .modal-close { position: absolute; top: 15px; right: 20px; font-size: 1.8rem; cursor: pointer; color: #bbb; }
   .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; margin-bottom: 20px; }
   .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
@@ -102,7 +109,7 @@
     <div class="video-container">
       <iframe src="https://www.youtube.com/embed/_2mkL_mWItA?rel=0" allowfullscreen></iframe>
     </div>
-    <p style="font-size:0.9rem; color:#444;">Join us online! Link emailed 30 mins before class.</p>
+    <p style="font-size:0.9rem; color:#444;">Link emailed 30 mins before class!</p>
   </div>
 </div>
 
@@ -110,12 +117,13 @@
   let currentQty = 1;
   let cachedData = null;
   const WORKER_URL = 'https://bolly-cardio-api.ahariani2.workers.dev/';
+  const MAPS_URL = "https://www.google.com/maps/search/?api=1&query=Creatives+Rental+Space+Atlanta";
   const ACUITY_ROOT = "https://bollycardiowitharushi.as.me/schedule/de43052c/appointment/";
 
   const classConfigs = {
-    'studio': { price: 12, timeLabel: '<b>10:45am EST</b> (60 mins)', apptId: '80746158', calId: '12423814', theme: 'Studio Session', suffix: 'T10%3A45%3A00-04%3A00' },
-    'studio_pm': { price: 12, timeLabel: '<b>1:45pm EST</b> (60 mins)', apptId: '80746158', calId: '12423814', theme: 'Item Songs: Part 3', suffix: 'T13%3A45%3A00-04%3A00' },
-    'online': { price: 10, timeLabel: '<b>11:00am EST</b> (50 mins)', apptId: '90839316', calId: '12423814', theme: 'Bolly Cardio at Home', suffix: 'T11%3A00%3A00-04%3A00' }
+    'studio': { price: 12, timeLabel: '<b>10:45am EST</b> (60 mins)', apptId: '80746158', calId: '12423814', theme: 'Studio Session', suffix: 'T10%3A45%3A00-04%3A00', loc: '📍 Creatives Rental Space' },
+    'studio_pm': { price: 12, timeLabel: '<b>1:45pm EST</b> (60 mins)', apptId: '80746158', calId: '12423814', theme: 'Item Songs Special (Session 2)', suffix: 'T13%3A45%3A00-04%3A00', loc: '📍 Creatives Rental Space' },
+    'online': { price: 10, timeLabel: '<b>11:00am EST</b> (50 mins)', apptId: '90839316', calId: '12423814', theme: 'Bolly Cardio at Home', suffix: 'T11%3A00%3A00-04%3A00', loc: '▶️ Online Class' }
   };
 
   const dateMap = {
@@ -127,11 +135,6 @@
 
   function openModal() { document.getElementById('infoModal').style.display = 'flex'; }
   function closeModal() { document.getElementById('infoModal').style.display = 'none'; }
-
-  function getWeeksAway(key) {
-    const diff = Math.ceil((new Date(dateMap[key].iso) - new Date().setHours(0,0,0,0)) / 86400000);
-    return diff === 0 ? "Today!" : (diff < 7 ? `In ${diff} days` : `In ${Math.ceil(diff/7)} weeks`);
-  }
 
   function renderSection(keys, title, isOnline) {
     if (keys.length === 0) return;
@@ -146,7 +149,6 @@
       const config = classConfigs[date.type];
       const live = cachedData ? cachedData[key] : null;
       let spots = date.hardSoldOut ? 0 : (live ? parseInt(live.spots) : 99);
-      
       const isSoldOut = spots <= 0;
       const theme = (live && live.theme) ? live.theme : config.theme;
       const url = `${ACUITY_ROOT}${config.apptId}/calendar/${config.calId}/datetime/${date.iso}${config.suffix}`;
@@ -160,16 +162,20 @@
             <span class="theme-title">${theme}</span>
             <span class="info-line">${config.timeLabel}</span>
             <span class="info-line"><b>$${(config.price * currentQty).toFixed(2)}</b></span>
+            ${isOnline ? 
+              `<a href="javascript:void(0)" onclick="openModal()" class="location-line">${config.loc}</a>` : 
+              `<a href="${MAPS_URL}" target="_blank" class="location-line">${config.loc}</a>`
+            }
           </div>
           <div class="action-col">
             <a href="${url}?quantity=${currentQty}" target="_blank" class="book-btn ${isSoldOut ? 'sold-out' : ''}">${isSoldOut ? 'SOLD OUT' : 'BOOK'}</a>
             <div class="label-container">
-  ${(!isOnline && key !== 'apr12_pm') ? `
-    <span class="spots-label" style="color: ${isSoldOut ? '#d4a5bc' : (spots <= 10 ? 'var(--bright-pink)' : 'var(--muted-magenta)')}">
-      ${isSoldOut ? 'No spots remaining' : (spots <= 10 ? `Only ${spots} left!` : `${spots} spots left`)}
-    </span>
-  ` : ''}
-</div>
+              ${(key !== 'apr12_pm' && !isOnline) ? `
+                <span class="spots-label" style="color: ${isSoldOut ? '#d4a5bc' : (spots <= 10 ? 'var(--bright-pink)' : 'var(--muted-magenta)')}">
+                  ${isSoldOut ? 'No spots remaining' : (spots <= 10 ? `Only ${spots} left!` : `${spots} spots left`)}
+                </span>
+              ` : ''}
+            </div>
           </div>
         </div>`;
       container.appendChild(card);
@@ -182,10 +188,7 @@
     container.innerHTML = '';
     renderSection(Object.keys(dateMap).filter(k => dateMap[k].type.startsWith('studio')), "Atlanta Studio Classes", false);
     renderSection(Object.keys(dateMap).filter(k => dateMap[k].type === 'online'), "Online Classes", true);
-    
-    setTimeout(() => {
-      window.parent.postMessage({ type: 'resize', height: document.body.scrollHeight + 100 }, '*');
-    }, 200);
+    setTimeout(() => { window.parent.postMessage({ type: 'resize', height: document.body.scrollHeight + 100 }, '*'); }, 300);
   }
 
   function changeQty(d) { currentQty = Math.max(1, Math.min(15, currentQty + d)); document.getElementById('qty-val').innerText = currentQty; if (cachedData) renderClasses(cachedData); }
