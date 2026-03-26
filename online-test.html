@@ -263,10 +263,7 @@
             ` : ''}
           </div>
         </div>
-        
-        ${isSoldOut ? `<div class="compact-row">...</div>` : ''}
-        <div class="card-content details-pane">...</div>
-      `;
+       
         ${isSoldOut ? `<div class="compact-row"><div class="compact-info"><b>${theme}</b> • ${config.timeLabel.replace(/<\/?[^>]+(>|$)/g, "")}</div><div class="compact-location">${config.loc}</div></div>` : ''}
         <div class="card-content details-pane" ${!isSoldOut ? 'style="display:flex !important;"' : ''}>
           <div class="details-col">
