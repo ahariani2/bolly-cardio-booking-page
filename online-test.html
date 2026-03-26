@@ -129,33 +129,36 @@
 
   /* Compact state for Sold Out cards */
   .class-card.compact {
-    margin-bottom: 10px; /* Tighter spacing for sold-out rows */
-    border-color: #eee;
-    box-shadow: none;
-    opacity: 0.7; /* Faded look to show it's "inactive" */
+    cursor: pointer;
+    border-style: dashed; /* Visual cue it's different */
+    transition: background 0.2s;
+  }
+  
+  .class-card.compact:hover { background: #fafafa; }
+
+  .compact-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    border-top: 1px solid rgba(0,0,0,0.05);
   }
 
-  .class-card.compact .card-header {
-    background-color: #f9f9f9;
-    padding: 8px 15px;
+  .compact-info {
+    font-size: 0.85rem;
+    color: #666;
+    text-align: left;
   }
 
-  .class-card.compact .date-text {
-    font-size: 0.9rem;
-    color: #888;
-  }
+  .compact-info b { color: var(--muted-magenta); }
+  .class-card.online.compact .compact-info b { color: var(--online-orange); }
 
-  .compact-status {
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: #d4a5bc;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    border: 1px solid #f3d4e4;
-    padding: 2px 8px;
-    border-radius: 4px;
-    background: #fff;
-  }
+  /* Expand/Collapse Logic */
+  .details-pane { display: none; padding: 20px; border-top: 1px solid #eee; }
+  .class-card.expanded .details-pane { display: block; }
+  .class-card.expanded .compact-row { display: none; } /* Hide the 2nd line when full info is shown */
+  
+  .expand-icon { font-size: 0.7rem; color: #999; margin-left: 8px; }
 
   /* Responsive Video Wrapper */
   .video-container {
@@ -288,56 +291,53 @@
       const config = classConfigs[dateInfo.type];
       const classData = cachedData ? cachedData[key] : null;
       
-      let spots = dateInfo.hardSoldOut ? 0 : 99;
-      if (classData) spots = parseInt(classData.spots);
-
+      let spots = dateInfo.hardSoldOut ? 0 : (classData ? parseInt(classData.spots) : 99);
       const isSoldOut = spots <= 0;
       const theme = (classData && classData.theme) ? classData.theme : config.defaultTheme;
-      
-      const card = document.createElement('div');
-      
-      // NEW: Add 'compact' class if sold out
-      card.className = `class-card ${isOnline ? 'online' : ''} ${isSoldOut ? 'compact' : ''}`;
+      const isLimit = currentQty > spots;
+      const targetUrl = `${ACUITY_ROOT}${config.appointmentId}/calendar/${config.calendarId}/datetime/${dateInfo.iso}${config.timeSuffix}`;
 
-      if (isSoldOut) {
-        // COMPACT VERSION: Just the header with a "Sold Out" tag
-        card.innerHTML = `
-          <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
-            <span class="date-text">${dateInfo.display}</span>
-            <span class="compact-status">Sold Out</span>
-          </div>
-        `;
-      } else {
-        // FULL VERSION: Your existing card HTML
-        const isLimit = currentQty > spots;
-        const targetUrl = `${ACUITY_ROOT}${config.appointmentId}/calendar/${config.calendarId}/datetime/${dateInfo.iso}${config.timeSuffix}`;
-        
-        card.innerHTML = `
-          <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
-            <span class="date-text">${dateInfo.display}</span>
-            <span style="font-size:0.75rem; font-weight:700; color:${isOnline ? '#a6511d' : 'var(--muted-magenta)'}; opacity:0.8;">${getWeeksAway(key)}</span>
-          </div>
-          <div class="card-content">
-            <div class="details-col">
-              <span class="theme-title">
-                ${theme} ${isOnline ? `<svg class="info-icon-svg" onclick="openModal()" ...></svg>` : ''}
-              </span>
-              <span class="info-line">${config.timeLabel}</span>
-              <span class="info-line price-display">$${(config.price * currentQty).toFixed(2)}</span>
-              ${isOnline ? 
-                `<a href="javascript:void(0)" onclick="openModal()" class="location-line">${config.locationLabel}</a>` : 
-                `<a href="${MAPS_URL}" target="_blank" class="location-line">${config.locationLabel}</a>`
-              }
+      const card = document.createElement('div');
+      card.className = `class-card ${isOnline ? 'online' : ''} ${isSoldOut ? 'compact' : ''}`;
+      
+      // Toggle Expansion on Click
+      card.onclick = () => {
+        card.classList.toggle('expanded');
+        // Notify parent to resize because the height just changed!
+        window.parent.postMessage({ type: 'resize', height: document.body.scrollHeight + 40 }, '*');
+      };
+
+      card.innerHTML = `
+        <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+          <span class="date-text">${dateInfo.display}</span>
+          ${isSoldOut ? '<span class="book-btn sold-out" style="padding:4px 10px; font-size:0.7rem;">SOLD OUT</span>' : `<span style="font-size:0.75rem; font-weight:700; color:${isOnline ? '#a6511d' : 'var(--muted-magenta)'}; opacity:0.8;">${getWeeksAway(key)}</span>`}
+        </div>
+
+        ${isSoldOut ? `
+          <div class="compact-row">
+            <div class="compact-info">
+              <b>${theme}</b> • ${config.timeLabel.replace(/<\/?[^>]+(>|$)/g, "")}
             </div>
-            <div class="action-col">
-              <a href="${targetUrl}?quantity=${currentQty}" target="_blank" class="book-btn">BOOK</a>
-              <div class="label-container">
-                ${(spots <= 45 && !isOnline) ? `<span class="spots-label">${spots} left!</span>` : ''}
-              </div>
-            </div>
+            <span class="expand-icon">TAP FOR INFO ▼</span>
           </div>
-        `;
-      }
+        ` : ''}
+
+        <div class="card-content details-pane" ${!isSoldOut ? 'style="display:block !important;"' : ''}>
+          <div class="details-col">
+            <span class="theme-title">
+              ${theme} ${isOnline ? `<svg class="info-icon-svg" onclick="event.stopPropagation(); openModal()" ...>...</svg>` : ''}
+            </span>
+            <span class="info-line">${config.timeLabel}</span>
+            <span class="info-line price-display">$${(config.price * currentQty).toFixed(2)}</span>
+            ${isOnline ? config.locationLabel : `<a href="${MAPS_URL}" target="_blank" class="location-line">${config.locationLabel}</a>`}
+          </div>
+          <div class="action-col">
+            <a href="${targetUrl}?quantity=${currentQty}" target="_blank" class="book-btn ${isSoldOut || isLimit ? 'sold-out' : ''}">
+               ${isSoldOut ? 'SOLD OUT' : (isLimit ? 'LIMIT REACHED' : 'BOOK')}
+            </a>
+          </div>
+        </div>
+      `;
       container.appendChild(card);
     });
   }
