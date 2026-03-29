@@ -234,7 +234,7 @@
             <div class="label-container">
               ${(key !== 'apr12_pm' && !isOnline) ? `
                 <span class="spots-label" style="color: ${isSoldOut ? '#d4a5bc' : (spots <= 10 ? 'var(--bright-pink)' : 'var(--muted-magenta)')}">
-                  ${isSoldOut ? 'No spots remaining' : (spots <= 10 ? `Only ${spots} left!` : ``)}
+                  ${isSoldOut ? 'No spots remaining' : (spots <= 30 ? `Only ${spots} left!` : ``)}
                 </span>
               ` : ''}
             </div>
