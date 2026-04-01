@@ -220,6 +220,11 @@ This is an online session. To participate, all you need is a stable internet con
 
       const theme = (liveData && liveData.theme) ? liveData.theme : config.defaultTheme;
       const isSoldOut = spots <= 0;
+      
+      // --- NEW LIMIT LOGIC ---
+      const isLimit = currentQty > spots;
+      const btnText = isSoldOut ? 'SOLD OUT' : (isLimit ? 'LIMIT REACHED' : 'BOOK');
+
       const targetUrl = `${ACUITY_ROOT}${config.appointmentId}/calendar/${config.calendarId}/datetime/${dateInfo.iso}${config.timeSuffix}`;
 
       const card = document.createElement('div');
@@ -239,13 +244,13 @@ This is an online session. To participate, all you need is a stable internet con
             ${isOnline ? `<a href="javascript:void(0)" onclick="openModal()" class="location-line">${config.locationLabel}</a>` : `<a href="${MAPS_URL}" target="_blank" rel="noopener" class="location-line">${config.locationLabel}</a>`}
           </div>
           <div class="action-col">
-            <a href="${targetUrl}?quantity=${currentQty}" target="_blank" rel="noopener" class="book-btn ${isSoldOut ? 'sold-out' : ''}">
-               ${isSoldOut ? 'SOLD OUT' : 'BOOK'}
+            <a href="${targetUrl}?quantity=${currentQty}" target="_blank" rel="noopener" class="book-btn ${isSoldOut || isLimit ? 'sold-out' : ''}">
+               ${btnText}
             </a>
             <div class="label-container">
               ${(!isOnline) ? `
-                <span class="spots-label" style="color: ${isSoldOut ? '#d4a5bc' : (spots <= 10 ? 'var(--bright-pink)' : 'var(--muted-magenta)')}">
-                  ${isSoldOut ? 'No spots remaining' : (spots <= 30 ? `${spots}/45 left` : ``)}
+                <span class="spots-label" style="color: ${isSoldOut || isLimit ? 'var(--bright-pink)' : 'var(--muted-magenta)'}">
+                  ${isSoldOut ? 'No spots remaining' : (isLimit ? `Only ${spots} spots left` : (spots <= 30 ? `${spots}/45 left` : ``))}
                 </span>
               ` : ''}
             </div>
@@ -254,6 +259,8 @@ This is an online session. To participate, all you need is a stable internet con
       container.appendChild(card);
     });
   }
+
+ 
 
   function renderClasses(data) {
     cachedData = data;
@@ -270,7 +277,11 @@ This is an online session. To participate, all you need is a stable internet con
     }, 200);
   }
 
-  function changeQty(d) { currentQty = Math.max(1, Math.min(15, currentQty + d)); document.getElementById('qty-val').innerText = currentQty; if (cachedData) renderClasses(cachedData); }
+  function changeQty(d) { 
+    currentQty = Math.max(1, Math.min(15, currentQty + d)); 
+    document.getElementById('qty-val').innerText = currentQty; 
+    renderClasses(cachedData || {}); // Instantly updates button state
+  }
 
 
   // 1. Load the cards instantly using your local dateMap
