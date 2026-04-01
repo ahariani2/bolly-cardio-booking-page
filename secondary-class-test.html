@@ -271,5 +271,19 @@ This is an online session. To participate, all you need is a stable internet con
   }
 
   function changeQty(d) { currentQty = Math.max(1, Math.min(15, currentQty + d)); document.getElementById('qty-val').innerText = currentQty; if (cachedData) renderClasses(cachedData); }
-  fetch(`${WORKER_URL}?t=${Date.now()}`).then(r => r.json()).then(renderClasses).catch(() => renderClasses({}));
+
+
+  // 1. Load the cards instantly using your local dateMap
+renderClasses({}); 
+
+// 2. Fetch live spots in the background and update the cards once the data arrives
+fetch(`${WORKER_URL}?t=${Date.now()}`)
+  .then(r => r.ok ? r.json() : Promise.reject())
+  .then(data => {
+    console.log("Live spots received:", data);
+    renderClasses(data); 
+  })
+  .catch(() => {
+    console.log("API is slow or failed; keeping local defaults.");
+  });
 </script>
