@@ -171,21 +171,17 @@ This is an online session. To participate, all you need is a stable internet con
   let cachedData = null;
   const WORKER_URL = 'https://bolly-cardio-api.ahariani2.workers.dev/';
   const MAPS_URL = "https://www.google.com/maps/search/?api=1&query=Creatives+Rental+Space+Atlanta";
+  const ACUITY_ROOT = "https://bollycardiowitharushi.as.me/schedule/de43052c/appointment/";
 
   const classConfigs = {
     'studio': { price: 12, timeLabel: '<b>10:45am EST</b> (60 mins)', appointmentId: '80746158', calendarId: '12423814', locationLabel: '📍 Creatives Rental Space', defaultTheme: 'Studio Session', timeSuffix: 'T10%3A45%3A00-04%3A00' },
-    // EMERGENCY PATCH: Added Studio PM config
     'studio_pm': { price: 12, timeLabel: '<b>1:45pm EST</b> (60 mins)', appointmentId: '80746158', calendarId: '12423814', locationLabel: '📍 Creatives Rental Space', defaultTheme: 'Item Songs: Part 3', timeSuffix: 'T13%3A45%3A00-04%3A00' },
     'online': { price: 10, timeLabel: '<b>11:00am EST</b> (50 mins)', appointmentId: '90839316', calendarId: '12423814', locationLabel: '▶️ Online Class', defaultTheme: 'Bolly Cardio at Home', timeSuffix: 'T11%3A00%3A00-04%3A00' }
   };
-  
-  const ACUITY_ROOT = "https://bollycardiowitharushi.as.me/schedule/de43052c/appointment/";
 
   const dateMap = {
-    // '2026-03-29': { display: 'Sunday, March 29, 2026', iso: '2026-03-29', type: 'studio' },
     '2026-04-12': { display: 'Sunday, April 12, 2026', iso: '2026-04-12', type: 'studio', hardSoldOut: true },
-    // EMERGENCY PATCH: Added apr12_pm slot
-    '2026-04-12-1345': { display: 'Sunday, April 12, 2026', iso: '2026-04-12', type: 'studio_pm' },
+    '2026-04-12-1345': { display: 'Sunday, April 12, 2026', iso: '2026-04-12', type: 'studio_pm', hardSoldOut: true },
     '2026-05-03-online': { display: 'Sunday, May 03, 2026', iso: '2026-05-03', type: 'online' }
   };
 
@@ -201,6 +197,28 @@ This is an online session. To participate, all you need is a stable internet con
     if (diffDays > 0 && diffDays < 7) return `In ${diffDays} day${diffDays > 1 ? 's' : ''}`;
     const weeks = Math.ceil(diffDays / 7);
     return weeks > 0 ? `In ${weeks} weeks` : "Soon!";
+  }
+
+  async function joinWaitlist(classKey) {
+    const email = prompt("Enter your email to join the waitlist:");
+    if (!email || !email.includes('@')) {
+      if (email) alert("Please enter a valid email address.");
+      return;
+    }
+
+    const dateInfo = dateMap[classKey];
+    const classType = classConfigs[dateInfo.type].defaultTheme;
+    const fullClassIdentifier = `${classType} | ${classKey}`;
+
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzZwlOnhN3QblYHtnpYXv5zek1nMt9MhrlqSpiANbcrqDeBDp7shc-usvEUraN1T9U8VQ/exec';
+    const query = `?email=${encodeURIComponent(email)}&className=${encodeURIComponent(fullClassIdentifier)}&source=waitlist_widget`;
+
+    try {
+      await fetch(SCRIPT_URL + query, { method: 'GET', mode: 'no-cors' });
+      alert(`Success! You're on the waitlist for ${dateInfo.display}. We'll email you if a spot opens up!`);
+    } catch (err) {
+      alert("Something went wrong — please try again or message us on Instagram!");
+    }
   }
 
   function renderSection(keys, title, isOnline) {
@@ -220,11 +238,8 @@ This is an online session. To participate, all you need is a stable internet con
 
       const theme = (liveData && liveData.theme) ? liveData.theme : config.defaultTheme;
       const isSoldOut = spots <= 0;
-      
-      // --- NEW LIMIT LOGIC ---
       const isLimit = currentQty > spots;
       const btnText = isSoldOut ? 'SOLD OUT' : (isLimit ? 'LIMIT REACHED' : 'BOOK');
-
       const targetUrl = `${ACUITY_ROOT}${config.appointmentId}/calendar/${config.calendarId}/datetime/${dateInfo.iso}${config.timeSuffix}`;
 
       const card = document.createElement('div');
@@ -250,7 +265,10 @@ This is an online session. To participate, all you need is a stable internet con
             <div class="label-container">
               ${(!isOnline) ? `
                 <span class="spots-label" style="color: ${isSoldOut || isLimit ? 'var(--bright-pink)' : 'var(--muted-magenta)'}">
-                  ${isSoldOut ? 'No spots remaining' : (isLimit ? `Only ${spots} spots left` : (spots <= 30 ? `${spots}/45 left` : ``))}
+                  ${isSoldOut ? 
+                    `No spots left. <a href="javascript:void(0)" onclick="joinWaitlist('${key}')" style="color:var(--bright-pink); text-decoration:underline; font-weight:700; margin-left:4px;">Join waitlist.</a>` 
+                    : (isLimit ? `Only ${spots} spots left` : (spots <= 30 ? `${spots}/45 left` : ``))
+                  }
                 </span>
               ` : ''}
             </div>
@@ -259,8 +277,6 @@ This is an online session. To participate, all you need is a stable internet con
       container.appendChild(card);
     });
   }
-
- 
 
   function renderClasses(data) {
     cachedData = data;
@@ -271,7 +287,6 @@ This is an online session. To participate, all you need is a stable internet con
     renderSection(studioKeys, "Atlanta Studio Classes", false);
     renderSection(onlineKeys, "Online Classes", true);
     
-    // THE FIX: Added 100px buffer to prevent cutoff
     setTimeout(() => {
         window.parent.postMessage({ type: 'resize', height: document.body.scrollHeight + 100 }, '*');
     }, 200);
@@ -280,21 +295,16 @@ This is an online session. To participate, all you need is a stable internet con
   function changeQty(d) { 
     currentQty = Math.max(1, Math.min(15, currentQty + d)); 
     document.getElementById('qty-val').innerText = currentQty; 
-    renderClasses(cachedData || {}); // Instantly updates button state
+    renderClasses(cachedData || {}); 
   }
 
+  // Speed Fix: Render local classes immediately
+  renderClasses({});
 
-  // 1. Load the cards instantly using your local dateMap
-renderClasses({}); 
-
-// 2. Fetch live spots in the background and update the cards once the data arrives
-fetch(`${WORKER_URL}?t=${Date.now()}`)
-  .then(r => r.ok ? r.json() : Promise.reject())
-  .then(data => {
-    console.log("Live spots received:", data);
-    renderClasses(data); 
-  })
-  .catch(() => {
-    console.log("API is slow or failed; keeping local defaults.");
-  });
-</script>
+  // Fetch live spots in background
+  fetch(`${WORKER_URL}?t=${Date.now()}`)
+    .then(r => r.json())
+    .then(renderClasses)
+    .catch(() => renderClasses({}));
+      </script>
+      
