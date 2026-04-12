@@ -173,13 +173,13 @@ This is an online session. To participate, all you need is a stable internet con
   const MAPS_URL = "https://www.google.com/maps/search/?api=1&query=Creatives+Rental+Space+Atlanta";
   const ACUITY_ROOT = "https://bollycardiowitharushi.as.me/schedule/de43052c/appointment/";
 
-  const classConfigs = {
+const classConfigs = {
+    'studio': { price: 12, timeLabel: '<b>10:45am EST</b> (60 mins)', appointmentId: '80746158', calendarId: '12423814', locationLabel: '📍 Creatives Rental Space', defaultTheme: 'Studio Session', timeSuffix: 'T10%3A45%3A00-04%3A00' },
+    'studio_pm': { price: 12, timeLabel: '<b>1:45pm EST</b> (60 mins)', appointmentId: '80746158', calendarId: '12423814', locationLabel: '📍 Creatives Rental Space', defaultTheme: 'Item Songs: Part 3', timeSuffix: 'T13%3A45%3A00-04%3A00' },
     'online': { price: 10, timeLabel: '<b>11:00am EST</b> (50 mins)', appointmentId: '90839316', calendarId: '12423814', locationLabel: '▶️ Online Class', defaultTheme: 'Bolly Cardio at Home', timeSuffix: 'T11%3A00%3A00-04%3A00' }
   };
 
   const dateMap = {
-    '2026-04-12': { display: 'Sunday, April 12, 2026', iso: '2026-04-12', type: 'studio', hardSoldOut: true },
-    '2026-04-12-1345': { display: 'Sunday, April 12, 2026', iso: '2026-04-12', type: 'studio_pm', hardSoldOut: true},
     '2026-05-24':  { display: 'Sunday, May 24, 2026', iso: '2026-05-24', type: 'studio' },
     '2026-05-03-online': { display: 'Sunday, May 03, 2026', iso: '2026-05-03', type: 'online' }
   };
