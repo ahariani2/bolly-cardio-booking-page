@@ -11,8 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
 
 <style>
-  /* 1. Global Reset & Layout */
-  body, html { margin: 0; padding: 0; overflow: hidden; background: transparent; min-height: 900px; }
+  body, html { margin: 0; padding: 0; overflow: visible; background: transparent; min-height: 900px; }
   
   :root {
     --bg-white: #ffffff;
@@ -22,7 +21,6 @@
     --bright-pink: #e4007c;
     --muted-magenta: #9f2c6b;
     --white: #ffffff;
-    /* Online Specifics */
     --online-orange: #ff8c42;
     --online-bg: #fffbf7;
     --online-header: #ffe8d6;
@@ -53,7 +51,6 @@
   }
   .step-btn { background: none; border: none; color: white; font-size: 1rem; cursor: pointer; }
 
-  /* 2. Card Components */
   .class-card {
     background: var(--white); border-radius: 12px; margin-bottom: 25px;
     overflow: hidden; border: 1px solid var(--header-pink);
@@ -72,30 +69,19 @@
   .action-col { text-align: center; display: flex; flex-direction: column; align-items: center; min-width: 130px; }
 
   .theme-title { color: var(--bright-pink); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; display: block; margin-bottom: 8px; }
+  .city-tag { font-size: 0.65rem; background: var(--header-pink); color: var(--muted-magenta); padding: 2px 6px; border-radius: 4px; margin-left: 6px; vertical-align: middle; }
+  .class-card.online .city-tag { background: var(--online-header); color: #a6511d; }
+
   .info-line { font-size: 0.9rem; color: #444; margin-bottom: 4px; display: block; }
   
   .location-line { 
-    font-size: 0.85rem; 
-    color: #666; 
-    margin-top: 8px; 
-    display: block; 
-    text-decoration: none;
-    transition: 0.2s;
-    cursor: pointer;
+    font-size: 0.85rem; color: #666; margin-top: 8px; display: block; 
+    text-decoration: none; transition: 0.2s; cursor: pointer;
   }
-  .location-line:hover {
-    color: var(--muted-magenta);
-    text-decoration: underline;
-  }
-  .class-card.online .location-line:hover {
-    color: var(--online-orange);
-  }
+  .location-line:hover { color: var(--muted-magenta); text-decoration: underline; }
+  .class-card.online .location-line:hover { color: var(--online-orange); }
 
-  .info-icon-svg { 
-    width: 18px; height: 18px; cursor: pointer; fill: var(--online-orange); 
-    vertical-align: middle; margin-left: 6px; transition: transform 0.2s;
-  }
-  .info-icon-svg:hover { transform: scale(1.1); }
+  .info-icon-svg { width: 18px; height: 18px; cursor: pointer; fill: var(--online-orange); vertical-align: middle; margin-left: 6px; }
 
   .book-btn {
     background: var(--muted-magenta); color: white !important;
@@ -109,23 +95,15 @@
   .spots-label { font-size: 0.75rem; font-weight: 600; margin-top: 8px; color: var(--bright-pink); display: block; }
   .label-container { min-height: 25px; margin-top: 5px; }
 
-  /* 3. Modal Styling */
-  .modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 1000;
-  }
-  .modal-content {
-    background: white; width: 90%; max-width: 480px; border-radius: 20px;
-    padding: 30px; position: relative; text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    font-family: 'Quicksand', sans-serif;
-  }
+  /* Modal Styling */
+  .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 1000; }
+  .modal-content { background: white; width: 90%; max-width: 480px; border-radius: 20px; padding: 30px; position: relative; text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.3); font-family: 'Quicksand', sans-serif; }
   .modal-close { position: absolute; top: 15px; right: 20px; font-size: 1.8rem; cursor: pointer; color: #bbb; }
   .modal-header { color: var(--online-orange); font-weight: 700; font-size: 1.2rem; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
   .modal-img { width: 100%; border-radius: 12px; margin-bottom: 20px; display: block; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
   
   .youtube-cta { font-size: 0.85rem; color: #666; margin-top: 35px; line-height: 1.5; padding: 0 10px; }
   .youtube-cta a { color: var(--muted-magenta); font-weight: 700; text-decoration: none; border-bottom: 1px solid var(--header-pink); transition: 0.2s; }
-  .youtube-cta a:hover { color: var(--bright-pink); border-color: var(--bright-pink); }
 </style>
 
 <div class="bolly-hub">
@@ -144,7 +122,7 @@
     <p style="color:var(--dark-magenta); font-weight:600; padding:20px;">Loading latest classes...</p>
   </div>
   <div class="youtube-cta">
-    Can't wait for class? Try our <a href="https://www.youtube.com/watch?v=_2mkL_mWItA&utm_source=bolly_hub&utm_medium=referral&utm_campaign=wait_for_class" target="_blank" rel="noopener">10-min Bolly Cardio YouTube workout</a> from home now!
+    Can't wait for class? Try our <a href="https://www.youtube.com/watch?v=_2mkL_mWItA&utm_source=bolly_hub" target="_blank" rel="noopener">10-min Bolly Cardio YouTube workout</a> from home now!
   </div>
 </div>
 
@@ -152,55 +130,73 @@
   <div class="modal-content" onclick="event.stopPropagation()">
     <span class="modal-close" onclick="closeModal()">×</span>
     <div class="modal-header">
-      <svg class="info-icon-svg" style="margin-left:0; margin-right:4px;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg> 
-      Online Classes
+      <svg class="info-icon-svg" style="margin-left:0; fill:var(--online-orange);" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+      Bolly Cardio At Home
     </div>
     <div class="modal-body">
       <p>Online Class Details</p>
       <p><b>Location:</b> 100% Virtual (Join from anywhere!)</p>
       <p><b>Platform:</b> Private Link (Emailed to you before class)</p>
-      <a href="https://www.youtube.com/watch?v=_2mkL_mWItA&utm_source=bolly_hub&utm_medium=referral&utm_campaign=info_modal_photo" target="_blank"><img src="https://lh3.googleusercontent.com/d/1pZ_U6Tf6fZW954vLxZ7k0RRDn_veS91F" class="modal-img" alt="Bolly Cardio at Home"></a>
-      <p>Experience the high-energy Bolly Cardio studio vibe from the comfort of your own home! Our online classes are designed for all levels. Whether you’re in Atlanta or halfway across the world, you can dance with us.</p>
-      <p><b>Watch an Example:</b> Check out our latest <a href="https://www.youtube.com/watch?v=_2mkL_mWItA&utm_source=bolly_hub&utm_medium=referral&utm_campaign=info_modal_link" target="_blank">YouTube session</a> to see Arushi’s teaching style and the type of high-energy tracks we’ll be dancing to.</p>
-      <p style="font-size: 0.85rem; color: #666; font-style: italic;">This is an online session. There is no physical in-person studio class held on this date. To participate, all you need is a stable internet connection and a device with YouTube. We recommend casting to your TV for the best experience!</p>
-    </div>
-  </div>
+      <a href="https://www.youtube.com/watch?v=_2mkL_mWItA" target="_blank">
+        <img src="https://lh3.googleusercontent.com/d/1pZ_U6Tf6fZW954vLxZ7k0RRDn_veS91F?auto=format&fit=crop&q=80&w=1000" class="modal-img" alt="Bolly Cardio at Home Preview">
+      </a>
+     <p>Experience the high-energy Bolly Cardio studio vibe from the comfort of your own home! Our online classes are designed for all levels. Whether you’re in Atlanta or halfway across the world, you can dance with us.</p>
+
+<p><b>Watch an Example:</b> Check out our latest <a href="https://www.youtube.com/watch?v=_2mkL_mWItA" target="_blank" style="color:var(--online-orange); font-weight:700; text-decoration:none;">YouTube session</a> to see Arushi’s teaching style.</p>
+
+<p style="font-size: 0.85rem; color: #666; font-style: italic; border-top: 1px solid #eee; padding-top: 10px;">
+This is an online session. To participate, all you need is a stable internet connection and a device with YouTube. We recommend casting to your TV for the best experience!
+</p>
+</div>
+</div>
 </div>
 
 <script>
   let currentQty = 1;
   let cachedData = null;
   const WORKER_URL = 'https://bolly-cardio-api.ahariani2.workers.dev/';
-  const MAPS_URL = "https://www.google.com/maps/search/?api=1&query=Creatives+Rental+Space+Atlanta";
-
-  // 1. Updated Config with new Times and Suffixes
-  const classConfigs = {
-    'studio': {
-      price: 12.00,
-      timeLabel: '<b>10:45am EST</b> (60 mins)',
-      appointmentId: '80746158',
-      calendarId: '12423814',
-      locationLabel: '📍 Creatives Rental Space',
-      defaultTheme: 'Studio Session',
-      timeSuffix: 'T10%3A45%3A00-04%3A00'
-    },
-    'online': {
-      price: 10.00,
-      timeLabel: '<b>11:00am EST</b> (50 mins)',
-      appointmentId: '90839316',
-      calendarId: '12423814',
-      locationLabel: '▶️ Online Class',
-      defaultTheme: 'Bolly Cardio at Home',
-      timeSuffix: 'T11%3A00%3A00-04%3A00'
-    }
-  };
-  
   const ACUITY_ROOT = "https://bollycardiowitharushi.as.me/schedule/de43052c/appointment/";
 
+  const classConfigs = {
+    'studio_atl': { 
+      price: 12, 
+      timeLabel: '<b>10:45am EST</b> (60 mins)', 
+      appointmentId: '80746158', 
+      calendarId: '12423814', 
+      locationLabel: '📍 Creatives Rental Space', 
+      mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Creatives+Rental+Space+Atlanta',
+      defaultTheme: 'Studio Session',
+      tag: 'ATL',
+      timeSuffix: 'T10%3A45%3A00-04%3A00' 
+    },
+    'studio_nyc': { 
+      price: 12, 
+      timeLabel: '<b>11:00am EST</b> (60 mins)', 
+      appointmentId: '91924024', 
+      calendarId: '12423814', 
+      locationLabel: '📍 Ripley-Grier Studios', 
+      mapsUrl: 'https://maps.app.goo.gl/Sfff8AHAnafg2i6B6',
+      defaultTheme: 'NYC Pop-up Session',
+      tag: 'NYC',
+      timeSuffix: 'T11%3A00%3A00-04%3A00' 
+    },
+    'online': { 
+      price: 10, 
+      timeLabel: '<b>11:00am EST</b> (50 mins)', 
+      appointmentId: '90839316', 
+      calendarId: '12423814', 
+      locationLabel: '▶️ Online Class', 
+      mapsUrl: '#',
+      defaultTheme: 'Bolly Cardio at Home',
+      tag: 'WEB',
+      timeSuffix: 'T11%3A00%3A00-04%3A00' 
+    }
+  };
+
   const dateMap = {
-    'mar29': { display: 'Sunday, March 29, 2026', iso: '2026-03-29', type: 'studio', hardSoldOut: true },
-    'apr12': { display: 'Sunday, April 12, 2026', iso: '2026-04-12', type: 'studio', hardSoldOut: true },
-    'may03': { display: 'Sunday, May 03, 2026', iso: '2026-05-03', type: 'online' }
+    '2026-05-03-online': { display: 'Sunday, May 03, 2026', iso: '2026-05-03', type: 'online' },
+    '2026-05-10-1100': { display: 'Sunday, May 10, 2026', iso: '2026-05-10', type: 'studio_nyc' },
+    '2026-05-24': { display: 'Sunday, May 24, 2026', iso: '2026-05-24', type: 'studio_atl' }
   };
 
   function openModal() { document.getElementById('infoModal').style.display = 'flex'; }
@@ -213,14 +209,34 @@
     const diffDays = Math.ceil((classDate - today) / (1000 * 60 * 60 * 24));
     if (diffDays === 0) return "Today!";
     if (diffDays > 0 && diffDays < 7) return `In ${diffDays} day${diffDays > 1 ? 's' : ''}`;
-    const weeks = Math.ceil(diffDays / 7);
-    return weeks > 0 ? `In ${weeks} weeks` : "Soon!";
+    return `In ${Math.ceil(diffDays / 7)} weeks`;
   }
 
+ async function joinWaitlist(classKey) {
+    const email = prompt("Enter your email to join the waitlist:");
+    if (!email || !email.includes('@')) {
+      if (email) alert("Please enter a valid email address.");
+      return;
+    }
+
+    const dateInfo = dateMap[classKey];
+    const classType = classConfigs[dateInfo.type].defaultTheme;
+    const fullClassIdentifier = `${classType} | ${classKey}`;
+
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzZwlOnhN3QblYHtnpYXv5zek1nMt9MhrlqSpiANbcrqDeBDp7shc-usvEUraN1T9U8VQ/exec';
+    const query = `?email=${encodeURIComponent(email)}&className=${encodeURIComponent(fullClassIdentifier)}&source=waitlist_widget`;
+
+    try {
+      await fetch(SCRIPT_URL + query, { method: 'GET', mode: 'no-cors' });
+      alert(`Success! You're on the waitlist for ${dateInfo.display}. We'll email you if a spot opens up!`);
+    } catch (err) {
+      alert("Something went wrong — please try again or message us on Instagram!");
+    }
+  }
+  
   function renderSection(keys, title, isOnline) {
     if (keys.length === 0) return;
     const container = document.getElementById('class-list');
-
     const header = document.createElement('div');
     header.style = `margin: 40px 0 20px 0; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: ${isOnline ? 'var(--online-orange)' : 'var(--muted-magenta)'}; display: flex; align-items: center; justify-content: center; gap: 15px; opacity: 0.8;`;
     header.innerHTML = `<span style="flex-grow:1; height:1px; background:currentColor; opacity:0.2;"></span> ${title} <span style="flex-grow:1; height:1px; background:currentColor; opacity:0.2;"></span>`;
@@ -229,16 +245,15 @@
     keys.forEach(key => {
       const dateInfo = dateMap[key];
       const config = classConfigs[dateInfo.type];
-      const classData = cachedData ? cachedData[key] : null;
+      const liveData = cachedData ? cachedData[key] : null;
       
+      // RESTORED: hardSoldOut logic
       let spots = dateInfo.hardSoldOut ? 0 : 99;
-      if (classData) spots = parseInt(classData.spots);
+      if (liveData) spots = parseInt(liveData.spots);
 
-      const theme = (classData && classData.theme) ? classData.theme : config.defaultTheme;
+      const theme = (liveData && liveData.theme) ? liveData.theme : config.defaultTheme;
       const isSoldOut = spots <= 0;
       const isLimit = currentQty > spots;
-
-      // 2. Dynamic targetUrl using config.timeSuffix
       const targetUrl = `${ACUITY_ROOT}${config.appointmentId}/calendar/${config.calendarId}/datetime/${dateInfo.iso}${config.timeSuffix}`;
 
       const card = document.createElement('div');
@@ -251,35 +266,29 @@
         <div class="card-content">
           <div class="details-col">
             <span class="theme-title">
-              ${theme} ${isOnline ? `<svg class="info-icon-svg" onclick="openModal()" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>` : ''}
+                ${theme} <span class="city-tag">${config.tag}</span>
+                ${isOnline ? `<svg class="info-icon-svg" onclick="openModal()" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>` : ''}
             </span>
             <span class="info-line">${config.timeLabel}</span>
-            <span class="info-line price-display">$${(config.price * currentQty).toFixed(2)}</span>
-            
-            ${isOnline ? 
-              `<a href="javascript:void(0)" onclick="openModal()" class="location-line">${config.locationLabel}</a>` : 
-              `<a href="${MAPS_URL}" target="_blank" rel="noopener" class="location-line">${config.locationLabel}</a>`
-            }
+            <span class="info-line">$${(config.price * currentQty).toFixed(2)}</span>
+            <a href="${config.mapsUrl}" target="_blank" class="location-line">${config.locationLabel}</a>
           </div>
           <div class="action-col">
-            <a href="${targetUrl}?quantity=${currentQty}" 
-               target="_blank" rel="noopener"
-               onclick="gtag('event', 'click_book', {'event_label': '${key}'})"
-               class="book-btn ${isSoldOut || isLimit ? 'sold-out' : ''}">
+            <a href="${targetUrl}?quantity=${currentQty}" target="_blank" class="book-btn ${isSoldOut || isLimit ? 'sold-out' : ''}">
                ${isSoldOut ? 'SOLD OUT' : (isLimit ? 'LIMIT REACHED' : 'BOOK')}
             </a>
             <div class="label-container">
-              ${(classData || dateInfo.hardSoldOut) ? (
-                (spots <= 45 && !isOnline) ? `
-                  <span class="spots-label" style="color: ${spots <= 10 ? 'var(--bright-pink)' : 'var(--muted-magenta)'}">
-                    ${isSoldOut ? 'No spots remaining' : (spots <= 10 ? `Only ${spots} left!` : `${spots} spots left`)}
-                  </span>
-                ` : ''
-              ) : ''}
+              ${(!isOnline) ? `
+                <span class="spots-label" style="color: ${isSoldOut || isLimit ? 'var(--bright-pink)' : 'var(--muted-magenta)'}">
+                  ${isSoldOut ? 
+                    `No spots left. <a href="javascript:void(0)" onclick="joinWaitlist('${key}')" style="color:var(--bright-pink); text-decoration:underline; font-weight:700;">Join waitlist.</a>` 
+                    : (isLimit ? `Only ${spots} left!` : (spots <= 45 ? `${spots}/45 left` : ``))
+                  }
+                </span>
+              ` : ''}
             </div>
           </div>
-        </div>
-      `;
+        </div>`;
       container.appendChild(card);
     });
   }
@@ -288,31 +297,28 @@
     cachedData = data;
     const container = document.getElementById('class-list');
     container.innerHTML = '';
-
-    const studioKeys = Object.keys(dateMap).filter(key => dateMap[key].type === 'studio');
-    const onlineKeys = Object.keys(dateMap).filter(key => dateMap[key].type === 'online');
-
-    renderSection(studioKeys, "Atlanta Studio Classes", false);
+    const studioKeys = Object.keys(dateMap).filter(k => dateMap[k].type.startsWith('studio'));
+    const onlineKeys = Object.keys(dateMap).filter(k => dateMap[k].type === 'online');
+    renderSection(studioKeys, "Studio Sessions", false);
     renderSection(onlineKeys, "Online Classes", true);
-    
-    window.parent.postMessage({ type: 'resize', height: document.body.scrollHeight }, '*');
+
+    // RESTORED: Resize logic with setTimeout
+    setTimeout(() => {
+        if (window.parent && window.parent.postMessage) {
+            window.parent.postMessage({ type: 'resize', height: document.body.scrollHeight + 100 }, '*');
+        }
+    }, 200);
   }
 
-  function changeQty(delta) {
-    const newVal = currentQty + delta;
-    if (newVal >= 1 && newVal <= 15) {
-      currentQty = newVal;
-      document.getElementById('qty-val').innerText = currentQty;
-      if (cachedData) renderClasses(cachedData);
-    }
+  function changeQty(d) { 
+    currentQty = Math.max(1, Math.min(15, currentQty + d)); 
+    document.getElementById('qty-val').innerText = currentQty; 
+    renderClasses(cachedData || {}); 
   }
 
-  function fetchAndRender() {
-    fetch(`${WORKER_URL}?t=${Date.now()}`, { cache: 'no-store' })
-      .then(r => r.ok ? r.json() : Promise.reject())
-      .then(renderClasses)
-      .catch(() => renderClasses({}));
-  }
-
-  fetchAndRender();
+  renderClasses({});
+  fetch(`${WORKER_URL}?t=${Date.now()}`)
+    .then(r => r.json())
+    .then(renderClasses)
+    .catch(() => renderClasses({}));
 </script>
