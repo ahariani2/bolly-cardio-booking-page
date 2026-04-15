@@ -26,6 +26,15 @@
     --online-header: #ffe8d6;
   }
 
+  .sub-note-text { 
+  font-size: 0.75rem; 
+  color: #444; 
+  font-style: italic; 
+  font-weight: 500; 
+  display: block; 
+  margin-bottom: 8px; 
+}
+  
   .bolly-hub {
     font-family: 'Quicksand', sans-serif;
     max-width: 550px;
@@ -174,7 +183,7 @@ This is an online session. To participate, all you need is a stable internet con
       timeLabel: '<b>11:00am EST</b> (60 mins)', 
       appointmentId: '91924024', 
       calendarId: '12423814', 
-      locationLabel: '📍 Ripley-Grier Studios', 
+      locationLabel: '📍 Ripley-Grier Studios (520 8th Ave)', 
       mapsUrl: 'https://maps.app.goo.gl/Sfff8AHAnafg2i6B6',
       defaultTheme: 'NYC Pop-up Session',
       tag: 'NYC',
@@ -196,7 +205,7 @@ This is an online session. To participate, all you need is a stable internet con
   const dateMap = {
     '2026-05-03-online': { display: 'Sunday, May 03, 2026', iso: '2026-05-03', type: 'online' },
     '2026-05-10-1100': { display: 'Sunday, May 10, 2026', iso: '2026-05-10', type: 'studio_nyc' },
-    '2026-05-24': { display: 'Sunday, May 24, 2026', iso: '2026-05-24', type: 'studio_atl' }
+    '2026-05-24': { display: 'Sunday, May 24, 2026', iso: '2026-05-24', type: 'studio_atl', subNote: '*Note: This is a long weekend' }
   };
 
   function openModal() { document.getElementById('infoModal').style.display = 'flex'; }
@@ -269,6 +278,7 @@ This is an online session. To participate, all you need is a stable internet con
                 ${theme} <span class="city-tag">${config.tag}</span>
                 ${isOnline ? `<svg class="info-icon-svg" onclick="openModal()" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>` : ''}
             </span>
+            ${dateInfo.subNote ? `<span class="sub-note-text">${dateInfo.subNote}</span>` : ''}
             <span class="info-line">${config.timeLabel}</span>
             <span class="info-line">$${(config.price * currentQty).toFixed(2)}</span>
             <a href="${config.mapsUrl}" target="_blank" class="location-line">${config.locationLabel}</a>
@@ -282,7 +292,7 @@ This is an online session. To participate, all you need is a stable internet con
                 <span class="spots-label" style="color: ${isSoldOut || isLimit ? 'var(--bright-pink)' : 'var(--muted-magenta)'}">
                   ${isSoldOut ? 
                     `No spots left. <a href="javascript:void(0)" onclick="joinWaitlist('${key}')" style="color:var(--bright-pink); text-decoration:underline; font-weight:700;">Join waitlist.</a>` 
-                    : (isLimit ? `Only ${spots} left!` : (spots <= 45 ? `${spots}/45 left` : ``))
+                    : (isLimit ? `Only ${spots} left!` : (spots <= 38 ? `${spots}/45 left` : ``))
                   }
                 </span>
               ` : ''}
