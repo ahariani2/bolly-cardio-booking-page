@@ -292,7 +292,7 @@ This is an online session. To participate, all you need is a stable internet con
                 <span class="spots-label" style="color: ${isSoldOut || isLimit ? 'var(--bright-pink)' : 'var(--muted-magenta)'}">
                   ${isSoldOut ? 
                     `No spots left. <a href="javascript:void(0)" onclick="joinWaitlist('${key}')" style="color:var(--bright-pink); text-decoration:underline; font-weight:700;">Join waitlist.</a>` 
-                    : (isLimit ? `Only ${spots} left!` : (spots <= 38 ? `${spots}/45 left` : ``))
+                    : (isLimit ? `Only ${spots} left!` : (spots <= 25 ? `${spots}/45 left` : ``))
                   }
                 </span>
               ` : ''}
